@@ -14,6 +14,8 @@ import org.newdawn.slick.Animation;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
+import static org.apache.commons.io.FilenameUtils.removeExtension;
+
 public class LukeSkywalker {
 	
 	private static final LukeSkywalker lukeSkywalker = new LukeSkywalker();
@@ -34,7 +36,7 @@ public class LukeSkywalker {
 
 			Map<String, Image> images = new HashMap<String, Image>();
 			for(File file:rawFiles){
-				images.put(file.getName(), new Image(file.getAbsolutePath()));
+				images.put(removeExtension(file.getName()), new Image(file.getAbsolutePath()));
 			}
 			this.images = images;
 		}  catch (IOException e) {
@@ -43,20 +45,28 @@ public class LukeSkywalker {
 			// TODO do something here
 		}
 	}
+
 	
-	private static Image getImage(String key){
-		return images.get(key);
-	}
-	
-	public static Animation getRightMovement(){
-		Image[] images = {getImage("9.png"),getImage("1.png")};
+	public static Animation getRightAnimation(){
+		Image[] imgSequence = {images.get("walk1"),images.get("walk2")};
 		int[] duration = {100,100};
-		return new Animation(images,duration,false);
+		return new Animation(imgSequence,duration,false);
 	}
 	public static Animation getNoAnimation(){
-		Image[] images = {getImage("9.png")};
+		Image[] imgSequence = {images.get("stand")};
 		int[] duration = {200};
-		return new Animation(images,duration,false);
+		return new Animation(imgSequence,duration,false);
 	}
+	public static Animation getAttackAnimation(){
+		Image[] imgSequence = {images.get("attack1"),images.get("attack2"),images.get("attack3")};
+		int[] duration = {50,50,70};
+		return new Animation(imgSequence,duration,false);
+	}
+	public static Animation getJumpAnimation(){
+		Image[] imgSequence = {images.get("jump")};
+		int[] duration = {200};
+		return new Animation(imgSequence,duration,false);
+	}
+
 
 }

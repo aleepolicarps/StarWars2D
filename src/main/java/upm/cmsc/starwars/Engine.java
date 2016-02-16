@@ -31,8 +31,8 @@ public class Engine extends StateBasedGame {
 	@Override
 	public void initStatesList(GameContainer gc) throws SlickException {
 		
-		gc.setMaximumLogicUpdateInterval(60);		
-		gc.setTargetFrameRate(60);
+		gc.setMaximumLogicUpdateInterval(120);		
+		gc.setTargetFrameRate(120);
 		gc.setAlwaysRender(true);
 		gc.setShowFPS(false);
 		gc.setVSync(true);
