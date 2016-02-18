@@ -1,8 +1,11 @@
 package upm.cmsc.starwars.states;
 
+import java.awt.Window;
+
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
@@ -15,21 +18,28 @@ public class GameState extends BasicGameState{
 	
 	private final long ATTACK_DURATION = 170;
 	private final long JUMP_DURATION = 150;
-	private final float H_DISPLACEMENT = 0.05f;
-	private final float MIN_Y = 540;
-	private final float MAX_Y = 500;
+	private final float H_DISPLACEMENT = 0.2f;
+	private final float MIN_Y = 395;
+	private final float MAX_X = 200;
 	private final float GRAVITY = 9.8f;
 	private final float INITIAL_VELOCITY = 5;
+	
+	private Image background;
 	
 	private Animation sprite, rightMove, noMove,attackMove,jumpMove;
 	private boolean attacking,jumping;
 	private float lukeX = 0;
 	private float lukeY = 0;
+	private float bgX = 0;
 	private long timeStarted = 0;
 	private float hVelocity = 0;
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
+		
+		background = new Image(GameState.class.getResource("/background/dessert.jpg").getPath());
+		bgX = background.getWidth() * -1;
+		
 		rightMove = LukeSkywalker.getRightAnimation();
 		noMove = LukeSkywalker.getNoAnimation();
 		attackMove = LukeSkywalker.getAttackAnimation();
@@ -41,6 +51,11 @@ public class GameState extends BasicGameState{
 	
 	@Override
 	public void render(GameContainer gc, StateBasedGame s, Graphics g) throws SlickException {
+		float x = bgX;
+		while(x<0){
+			background.draw(x+background.getWidth(),0);
+			x+=background.getWidth();
+		}
 		sprite.draw(lukeX,lukeY);
 	}
 	
@@ -51,8 +66,13 @@ public class GameState extends BasicGameState{
 			s.enterState(State.MENU);
 		}
 		if(gc.getInput().isKeyDown(Input.KEY_RIGHT) && !jumping){
-			lukeX+=delta*H_DISPLACEMENT;
-			sprite = rightMove;			
+			if(lukeX<MAX_X){
+				lukeX+=delta*H_DISPLACEMENT;		
+			}
+			else{
+				bgX-=delta*H_DISPLACEMENT;
+			}
+			sprite = rightMove;	
 		}
 		else if(gc.getInput().isKeyPressed(Input.KEY_A) && !attacking){
 				sprite = attackMove;
@@ -85,6 +105,9 @@ public class GameState extends BasicGameState{
 		}
 		else{
 			sprite = noMove;
+		}
+		if(lukeX>MAX_X){
+			lukeX=MAX_X;
 		}
 		sprite.update(delta);
 	}
