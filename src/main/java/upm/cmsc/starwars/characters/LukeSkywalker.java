@@ -17,18 +17,18 @@ import org.newdawn.slick.SlickException;
 import static org.apache.commons.io.FilenameUtils.removeExtension;
 
 public class LukeSkywalker {
+	private Map<String,Image> images;
+	private float x = 0;
+	private float y = 0;
 	
-	private static final LukeSkywalker lukeSkywalker = new LukeSkywalker();
-	private static Map<String,Image> images;
-	
-	private LukeSkywalker(){
+	public LukeSkywalker(){
 		loadSprites();
 	}
 	
 	
 	private void loadSprites(){
 		try {
-			String folderName = LukeSkywalker.class.getResource("/sprites/luke").getPath();
+			String folderName = this.getClass().getResource("/sprites/luke").getPath();
 			List<File> rawFiles = Files.walk(Paths.get(folderName))
 					.filter(Files::isRegularFile)
 					.map(Path::toFile)
@@ -47,25 +47,52 @@ public class LukeSkywalker {
 	}
 
 	
-	public static Animation getRightAnimation(){
+	public Animation getRightAnimation(){
 		Image[] imgSequence = {images.get("walk1"),images.get("walk2")};
 		int[] duration = {100,100};
 		return new Animation(imgSequence,duration,false);
 	}
-	public static Animation getNoAnimation(){
+	public Animation getNoAnimation(){
 		Image[] imgSequence = {images.get("stand")};
 		int[] duration = {200};
 		return new Animation(imgSequence,duration,false);
 	}
-	public static Animation getAttackAnimation(){
+	public Animation getAttackAnimation(){
 		Image[] imgSequence = {images.get("attack1"),images.get("attack2"),images.get("attack3")};
 		int[] duration = {50,50,70};
 		return new Animation(imgSequence,duration,false);
 	}
-	public static Animation getJumpAnimation(){
+	public Animation getJumpAnimation(){
 		Image[] imgSequence = {images.get("jump")};
 		int[] duration = {200};
 		return new Animation(imgSequence,duration,false);
+	}
+
+
+	public float getX() {
+		return x;
+	}
+
+
+	public void setX(float x) {
+		this.x = x;
+	}
+
+
+	public float getY() {
+		return y;
+	}
+
+
+	public void setY(float y) {
+		this.y = y;
+	}
+	
+	public void addToX(float num){
+		x+=num;
+	}
+	public void addToY(float num){
+		y+=num;
 	}
 
 

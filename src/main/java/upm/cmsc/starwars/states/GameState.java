@@ -1,7 +1,5 @@
 package upm.cmsc.starwars.states;
 
-import java.awt.Window;
-
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -24,29 +22,31 @@ public class GameState extends BasicGameState{
 	private final float GRAVITY = 9.8f;
 	private final float INITIAL_VELOCITY = 5;
 	
-	private Image background;
 	
 	private Animation sprite, rightMove, noMove,attackMove,jumpMove;
 	private boolean attacking,jumping;
-	private float lukeX = 0;
-	private float lukeY = 0;
-	private float bgX = 0;
-	private long timeStarted = 0;
-	private float hVelocity = 0;
+	private float bgX,hVelocity;
+	private long timeStarted;
+	
+	private LukeSkywalker luke;
+	private Image background;
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
 		
-		background = new Image(GameState.class.getResource("/background/dessert.jpg").getPath());
+		luke = new LukeSkywalker();
+		
+		background = new Image(this.getClass().getResource("/background/dessert.jpg").getPath());
 		bgX = background.getWidth() * -1;
 		
-		rightMove = LukeSkywalker.getRightAnimation();
-		noMove = LukeSkywalker.getNoAnimation();
-		attackMove = LukeSkywalker.getAttackAnimation();
-		jumpMove = LukeSkywalker.getJumpAnimation();
+		rightMove = luke.getRightAnimation();
+		noMove = luke.getNoAnimation();
+		attackMove = luke.getAttackAnimation();
+		jumpMove = luke.getJumpAnimation();
 		sprite = noMove;
 		
-		lukeY = MIN_Y;
+		
+		luke.setY(MIN_Y);
 	}
 	
 	@Override
@@ -56,7 +56,7 @@ public class GameState extends BasicGameState{
 			background.draw(x+background.getWidth(),0);
 			x+=background.getWidth();
 		}
-		sprite.draw(lukeX,lukeY);
+		sprite.draw(luke.getX(),luke.getY());
 	}
 	
 	@Override
@@ -66,11 +66,14 @@ public class GameState extends BasicGameState{
 			s.enterState(State.MENU);
 		}
 		if(gc.getInput().isKeyDown(Input.KEY_RIGHT) && !jumping){
-			if(lukeX<MAX_X){
-				lukeX+=delta*H_DISPLACEMENT;		
+			if(luke.getX()<MAX_X){
+				luke.addToX(delta*H_DISPLACEMENT);
 			}
 			else{
 				bgX-=delta*H_DISPLACEMENT;
+			}
+			if(luke.getX()>MAX_X){
+				luke.setX(MAX_X);
 			}
 			sprite = rightMove;	
 		}
@@ -95,19 +98,16 @@ public class GameState extends BasicGameState{
 		else if(jumping){
 			long timeCurr = System.currentTimeMillis();
 			if((timeCurr-timeStarted<JUMP_DURATION)&&hVelocity>0){
-				lukeY -= hVelocity;
-				hVelocity = (float) Math.sqrt(INITIAL_VELOCITY+2*(GRAVITY*(lukeY-MIN_Y)));
+				luke.addToY(hVelocity*-1);
+				hVelocity = (float) Math.sqrt(INITIAL_VELOCITY+2*(GRAVITY*(luke.getY()-MIN_Y)));
 			}
 			else if(timeCurr-timeStarted>JUMP_DURATION){
 				jumping=false;
-				lukeY = MIN_Y;
+				luke.setY(MIN_Y);
 			}
 		}
 		else{
 			sprite = noMove;
-		}
-		if(lukeX>MAX_X){
-			lukeX=MAX_X;
 		}
 		sprite.update(delta);
 	}
