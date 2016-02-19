@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>StarWard2D</groupId>
-  <artifactId>StarWard2D</artifactId>
+  <groupId>StarWars2D</groupId>
+  <artifactId>StarWars2D</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <description>CMSC 161 Game Project</description>
     
@@ -16,6 +16,11 @@
 		<groupId>org.slick2d</groupId>
 		<artifactId>slick2d-core</artifactId>
 		<version>1.0.1</version>
+	</dependency>
+	<dependency>
+		<groupId>commons-io</groupId>
+		<artifactId>commons-io</artifactId>
+		<version>2.4</version>
 	</dependency>
   	
   </dependencies>
