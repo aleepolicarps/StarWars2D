@@ -1,5 +1,7 @@
 package upm.cmsc.starwars.objects;
 
+import java.net.URISyntaxException;
+
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
@@ -10,7 +12,12 @@ public class Background {
 	
 	
 	public Background(String filename) throws SlickException{
-		image = new Image(this.getClass().getResource("/background/"+filename).getPath());
+		try {
+			image = new Image(this.getClass().getResource("/background/"+filename).toURI().getPath());
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		x = -1 * image.getWidth();
 	}
 
