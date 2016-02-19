@@ -8,25 +8,10 @@ import org.newdawn.slick.state.StateBasedGame;
 import upm.cmsc.starwars.states.*;
 
 public class Engine extends StateBasedGame {
-	
-	public static boolean _APPLET;
 
 	public Engine(String title) {
 		super(title);
 	}
-
-	public static void main(String[] args) {
-		_APPLET = false;
-		try {
-			AppGameContainer game = new AppGameContainer(new Engine(Window.GAME_TITLE));
-			game.setDisplayMode(Window.WIDTH, Window.HEIGHT, Window.isFullScreen());
-			game.start();
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
-
-	}
-
 
 	@Override
 	public void initStatesList(GameContainer gc) throws SlickException {
@@ -38,7 +23,18 @@ public class Engine extends StateBasedGame {
 		gc.setVSync(true);
 		
 		this.addState(new GameState());
-		this.addState(new MenuState());
+//		this.addState(new MenuState());
 	}
 
+	public static void main(String[] args) {
+		try {
+			AppGameContainer game = new AppGameContainer(new Engine(Window.GAME_TITLE));
+			game.setDisplayMode(Window.WIDTH, Window.HEIGHT, Window.isFullScreen());
+			game.start();
+		} catch (SlickException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
 }
