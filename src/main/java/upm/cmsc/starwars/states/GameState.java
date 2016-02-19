@@ -9,73 +9,82 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import upm.cmsc.starwars.characters.LukeSkywalker;
+import upm.cmsc.starwars.objects.Background;
+import upm.cmsc.starwars.objects.LukeSkywalker;
+import static upm.cmsc.starwars.objects.Contstants.*;
 
 
 public class GameState extends BasicGameState{
 	
-	private final long ATTACK_DURATION = 170;
-	private final long JUMP_DURATION = 150;
-	private final float H_DISPLACEMENT = 0.2f;
-	private final float MIN_Y = 395;
+	private final float MIN_Y = 365;
 	private final float MAX_X = 200;
-	private final float GRAVITY = 9.8f;
-	private final float INITIAL_VELOCITY = 5;
 	
 	
 	private Animation sprite, rightMove, noMove,attackMove,jumpMove;
 	private boolean attacking,jumping;
-	private float bgX,hVelocity;
+	private float hVelocity;
 	private long timeStarted;
 	
+	private Background background;
 	private LukeSkywalker luke;
-	private Image background;
+	
+	
+	private Image tree;
+	private Image tumbleweed;
+	private float treeX = 10;
+	private float tumbleweedX = 0;
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
 		
 		luke = new LukeSkywalker();
-		
-		background = new Image(this.getClass().getResource("/background/dessert.jpg").getPath());
-		bgX = background.getWidth() * -1;
+		luke.setY(MIN_Y);
+		background = new Background("dessert.jpg");
 		
 		rightMove = luke.getRightAnimation();
 		noMove = luke.getNoAnimation();
 		attackMove = luke.getAttackAnimation();
 		jumpMove = luke.getJumpAnimation();
-		sprite = noMove;
+		sprite = noMove;	
 		
 		
-		luke.setY(MIN_Y);
+		tree = new Image(this.getClass().getResource("/elements/tree.png").getPath());
+		tumbleweed = new Image(this.getClass().getResource("/elements/tumbleweed.png").getPath());
 	}
 	
 	@Override
 	public void render(GameContainer gc, StateBasedGame s, Graphics g) throws SlickException {
-		float x = bgX;
-		while(x<0){
-			background.draw(x+background.getWidth(),0);
-			x+=background.getWidth();
+		background.draw(0);
+		float x = treeX;
+		while(x<background.getWidth()){
+			tree.draw(x, 200);
+			x+=500;
 		}
+		x = tumbleweedX;
+		while(x<background.getWidth()){
+			tumbleweed.draw(x,320);
+			x+=20;
+		}
+		
+		
 		sprite.draw(luke.getX(),luke.getY());
 	}
 	
 	@Override
-	public void update(GameContainer gc, StateBasedGame s, int delta) throws SlickException {
-		
-		if(gc.getInput().isKeyPressed(Input.KEY_ENTER)){
-			s.enterState(State.MENU);
-		}
+	public void update(GameContainer gc, StateBasedGame s, int delta) throws SlickException {	
 		if(gc.getInput().isKeyDown(Input.KEY_RIGHT) && !jumping){
+			sprite = rightMove;	
 			if(luke.getX()<MAX_X){
 				luke.addToX(delta*H_DISPLACEMENT);
+				if(luke.getX()>MAX_X){
+					luke.setX(MAX_X);
+				}
 			}
 			else{
-				bgX-=delta*H_DISPLACEMENT;
+				treeX -= delta*H_DISPLACEMENT;
+				tumbleweedX -= delta * 0.05f;
+//				background.addToX(-1*(delta*H_DISPLACEMENT));
 			}
-			if(luke.getX()>MAX_X){
-				luke.setX(MAX_X);
-			}
-			sprite = rightMove;	
 		}
 		else if(gc.getInput().isKeyPressed(Input.KEY_A) && !attacking){
 				sprite = attackMove;

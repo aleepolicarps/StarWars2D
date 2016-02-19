@@ -1,4 +1,4 @@
-package upm.cmsc.starwars.characters;
+package upm.cmsc.starwars.objects;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,17 +17,19 @@ import org.newdawn.slick.SlickException;
 import static org.apache.commons.io.FilenameUtils.removeExtension;
 
 public class LukeSkywalker {
+	
 	private Map<String,Image> images;
 	private float x = 0;
 	private float y = 0;
+	private Animation currSprite,rightMove,noMove,attackMove,jumpMove;
 	
-	public LukeSkywalker(){
+	public LukeSkywalker() throws SlickException{
 		loadSprites();
 	}
 	
 	
-	private void loadSprites(){
-		try {
+	private void loadSprites() throws SlickException{
+		try{
 			String folderName = this.getClass().getResource("/sprites/luke").getPath();
 			List<File> rawFiles = Files.walk(Paths.get(folderName))
 					.filter(Files::isRegularFile)
@@ -41,11 +43,19 @@ public class LukeSkywalker {
 			this.images = images;
 		}  catch (IOException e) {
 			// TODO do something here
-		} catch (SlickException e) {
-			// TODO do something here
-		}
+		} 
 	}
-
+	
+//	private void loadAnimations(){
+//		Image[] imgSequence = {images.get("walk1"),images.get("walk2")};
+//		int[] duration = {100,100};
+//		rightMove =  new Animation(imgSequence.clone(),duration.clone(),false);
+//		
+//		imgSequence = new Image[]{images.get("stand")};
+//		duration = new int[]{200};
+//		noMove =  new Animation(imgSequence.clone(),duration.clone(),false);
+//	}
+//	
 	
 	public Animation getRightAnimation(){
 		Image[] imgSequence = {images.get("walk1"),images.get("walk2")};
