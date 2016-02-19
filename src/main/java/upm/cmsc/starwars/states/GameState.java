@@ -16,7 +16,7 @@ import static upm.cmsc.starwars.objects.Contstants.*;
 
 public class GameState extends BasicGameState{
 	
-	private final float MIN_Y = 365;
+	private final float MIN_Y = 510;
 	private final float MAX_X = 200;
 	
 	
@@ -57,12 +57,12 @@ public class GameState extends BasicGameState{
 		background.draw(0);
 		float x = treeX;
 		while(x<background.getWidth()){
-			tree.draw(x, 200);
+			tree.draw(x, 300);
 			x+=500;
 		}
 		x = tumbleweedX;
 		while(x<background.getWidth()){
-			tumbleweed.draw(x,320);
+			tumbleweed.draw(x,420);
 			x+=20;
 		}
 		
