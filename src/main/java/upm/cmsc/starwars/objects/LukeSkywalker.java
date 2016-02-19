@@ -31,7 +31,7 @@ public class LukeSkywalker {
 	private void loadSprites() throws SlickException{
 		try{
 			String folderName = this.getClass().getResource("/sprites/luke").getPath();
-			List<File> rawFiles = Files.walk(Paths.get(folderName.substring(1)))
+			List<File> rawFiles = Files.walk(Paths.get(folderName))
 					.filter(Files::isRegularFile)
 					.map(Path::toFile)
 					.collect(Collectors.toList());
