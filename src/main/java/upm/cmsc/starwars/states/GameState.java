@@ -1,5 +1,7 @@
 package upm.cmsc.starwars.states;
 
+import java.net.URISyntaxException;
+
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -36,7 +38,12 @@ public class GameState extends BasicGameState{
 		
 		luke = new LukeSkywalker();
 		
-		background = new Image(this.getClass().getResource("/background/dessert.jpg").getPath());
+		try {
+			background = new Image(this.getClass().getResource("/background/dessert.jpg").toURI().getPath().substring(1));
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		bgX = background.getWidth() * -1;
 		
 		rightMove = luke.getRightAnimation();

@@ -2,6 +2,7 @@ package upm.cmsc.starwars.characters;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,11 +26,18 @@ public class LukeSkywalker {
 		loadSprites();
 	}
 	
+	private String folderName;
 	
 	private void loadSprites(){
 		try {
-			String folderName = this.getClass().getResource("/sprites/luke").getPath();
-			List<File> rawFiles = Files.walk(Paths.get(folderName))
+			
+			try {
+				folderName = this.getClass().getResource("/sprites/luke").toURI().getPath();
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			List<File> rawFiles = Files.walk(Paths.get(folderName.substring(1)))
 					.filter(Files::isRegularFile)
 					.map(Path::toFile)
 					.collect(Collectors.toList());
