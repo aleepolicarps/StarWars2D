@@ -32,7 +32,7 @@ public class GameState extends BasicGameState{
 	private Image tree;
 	private Image tumbleweed;
 	private float treeX = 10;
-	private float tumbleweedX = 0;
+	private float tumbleweedX = -10;
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
@@ -81,8 +81,8 @@ public class GameState extends BasicGameState{
 				}
 			}
 			else{
-				treeX -= delta*H_DISPLACEMENT;
-				tumbleweedX -= delta * 0.05f;
+				treeX -= delta * 0.05f;
+				tumbleweedX -= delta*H_DISPLACEMENT;
 //				background.addToX(-1*(delta*H_DISPLACEMENT));
 			}
 		}
