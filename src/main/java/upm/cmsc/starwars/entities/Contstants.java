@@ -1,4 +1,4 @@
-package upm.cmsc.starwars.objects;
+package upm.cmsc.starwars.entities;
 
 public class Contstants {
 	public static final long ATTACK_DURATION = 170;

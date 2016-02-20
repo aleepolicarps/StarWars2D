@@ -1,4 +1,4 @@
-package upm.cmsc.starwars.objects;
+package upm.cmsc.starwars.entities;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,9 +19,12 @@ import static org.apache.commons.io.FilenameUtils.removeExtension;
 
 public class LukeSkywalker {
 	
+	public static final int MAX_HEALTH = 200;
+	
 	private Map<String,Image> images;
 	private float x = 0;
 	private float y = 0;
+	private int currHealth = MAX_HEALTH;
 	private Animation currSprite,rightMove,noMove,attackMove,jumpMove;
 	
 	public LukeSkywalker() throws SlickException{
@@ -110,6 +113,14 @@ public class LukeSkywalker {
 	}
 	public void addToY(float num){
 		y+=num;
+	}
+
+	public int getCurrHealth() {
+		return currHealth;
+	}
+
+	public void decreaseHealth(int damage) {
+		currHealth -= damage;
 	}
 
 
