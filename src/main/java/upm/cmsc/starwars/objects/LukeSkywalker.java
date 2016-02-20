@@ -27,18 +27,16 @@ public class LukeSkywalker {
 	public LukeSkywalker() throws SlickException{
 		loadSprites();
 	}
-	
-	private String folderName;
 
 	private void loadSprites() throws SlickException{
+		String folderName = "";
 		try{
 			try {
+				folderName = this.getClass().getResource("sprites/luke").toURI().getPath();
+			} catch(NullPointerException e){
 				folderName = this.getClass().getResource("/sprites/luke").toURI().getPath();
-			} catch (URISyntaxException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
-			List<File> rawFiles = Files.walk(Paths.get(folderName.substring(1)))
+			List<File> rawFiles = Files.walk(Paths.get(folderName))
 					.filter(Files::isRegularFile)
 					.map(Path::toFile)
 					.collect(Collectors.toList());
@@ -50,7 +48,9 @@ public class LukeSkywalker {
 			this.images = images;
 		}  catch (IOException e) {
 			// TODO do something here
-		} 
+		} catch (URISyntaxException e) {
+			// TODO do something here
+		}
 	}
 	
 //	private void loadAnimations(){

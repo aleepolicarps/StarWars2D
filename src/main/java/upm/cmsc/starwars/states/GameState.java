@@ -11,7 +11,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import upm.cmsc.starwars.objects.Background;
 import upm.cmsc.starwars.objects.LukeSkywalker;
 import static upm.cmsc.starwars.objects.Contstants.*;
 
@@ -23,58 +22,73 @@ public class GameState extends BasicGameState{
 	
 	
 	private Animation sprite, rightMove, noMove,attackMove,jumpMove;
+	private Image tree,tumbleweed,background,path;
 	private boolean attacking,jumping;
 	private float hVelocity;
 	private long timeStarted;
-	
-	private Background background;
-	private LukeSkywalker luke;
-	
-	
-	private Image tree;
-	private Image tumbleweed;
 	private float treeX = 10;
 	private float tumbleweedX = -10;
 	
-	@Override
-	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
-		
-		luke = new LukeSkywalker();
-
-		luke.setY(MIN_Y);
-		background = new Background("dessert.jpg");
-		
+	private LukeSkywalker luke;
+	
+	private void loadAnimations(){
 		rightMove = luke.getRightAnimation();
 		noMove = luke.getNoAnimation();
 		attackMove = luke.getAttackAnimation();
 		jumpMove = luke.getJumpAnimation();
 		sprite = noMove;	
-		
-		
+	}
+	
+	private void loadImages() throws SlickException{
 		try {
-			tree = new Image(this.getClass().getResource("/elements/tree.png").toURI().getPath().substring(1));
-			tumbleweed = new Image(this.getClass().getResource("/elements/tumbleweed.png").toURI().getPath().substring(1));
+			try{
+				tree = new Image(this.getClass().getResource("elements/tree.png").toURI().getPath());
+				tumbleweed = new Image(this.getClass().getResource("elements/tumbleweed.png").toURI().getPath());
+				background = new Image(this.getClass().getResource("background/desert.jpg").toURI().getPath());
+				path = new Image(this.getClass().getResource("elements/desert_path.png").toURI().getPath());
+			}catch(NullPointerException e){
+				tree = new Image(this.getClass().getResource("/elements/tree.png").toURI().getPath());
+				tumbleweed = new Image(this.getClass().getResource("/elements/tumbleweed.png").toURI().getPath());
+				background = new Image(this.getClass().getResource("/background/desert.jpg").toURI().getPath());
+				path = new Image(this.getClass().getResource("/elements/desert_path.png").toURI().getPath());
+			}
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// TODO do something here
 		}
+	}
+	
+	@Override
+	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
+		
+		luke = new LukeSkywalker();
+		luke.setY(MIN_Y);
+		
+		loadAnimations();
+		loadImages();
 		
 	}
 	
 	@Override
 	public void render(GameContainer gc, StateBasedGame s, Graphics g) throws SlickException {
-		background.draw(0);
+		background.draw();
+		
 		float x = treeX;
 		while(x<background.getWidth()){
 			tree.draw(x, 300);
 			x+=500;
 		}
+		
 		x = tumbleweedX;
 		while(x<background.getWidth()){
 			tumbleweed.draw(x,420);
 			x+=20;
 		}
 		
+		x = tumbleweedX;
+		while(x<background.getWidth()){
+			path.draw(x,545);
+			x+=background.getWidth();
+		}
 		
 		sprite.draw(luke.getX(),luke.getY());
 	}
