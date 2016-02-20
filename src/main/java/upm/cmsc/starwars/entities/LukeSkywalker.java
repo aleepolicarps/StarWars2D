@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.newdawn.slick.Animation;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
@@ -21,11 +22,10 @@ public class LukeSkywalker {
 	
 	public static final int MAX_HEALTH = 200;
 	
-	private Map<String,Image> images;
+	private static Map<String,Image> images;
 	private float x = 0;
 	private float y = 0;
 	private int currHealth = MAX_HEALTH;
-	private Animation currSprite,rightMove,noMove,attackMove,jumpMove;
 	
 	public LukeSkywalker() throws SlickException{
 		loadSprites();
@@ -56,34 +56,28 @@ public class LukeSkywalker {
 		}
 	}
 	
-//	private void loadAnimations(){
-//		Image[] imgSequence = {images.get("walk1"),images.get("walk2")};
-//		int[] duration = {100,100};
-//		rightMove =  new Animation(imgSequence.clone(),duration.clone(),false);
-//		
-//		imgSequence = new Image[]{images.get("stand")};
-//		duration = new int[]{200};
-//		noMove =  new Animation(imgSequence.clone(),duration.clone(),false);
-//	}
-//	
-	
-	public Animation getRightAnimation(){
+	public static Animation getRightAnimation(){
 		Image[] imgSequence = {images.get("walk1"),images.get("walk2")};
 		int[] duration = {100,100};
 		return new Animation(imgSequence,duration,false);
 	}
-	public Animation getNoAnimation(){
+	public static Animation getNoAnimation(){
 		Image[] imgSequence = {images.get("stand")};
 		int[] duration = {200};
 		return new Animation(imgSequence,duration,false);
 	}
-	public Animation getAttackAnimation(){
+	public static Animation getAttackAnimation(){
 		Image[] imgSequence = {images.get("attack1"),images.get("attack2"),images.get("attack3")};
 		int[] duration = {50,50,70};
 		return new Animation(imgSequence,duration,false);
 	}
-	public Animation getJumpAnimation(){
+	public static Animation getJumpAnimation(){
 		Image[] imgSequence = {images.get("jump")};
+		int[] duration = {200};
+		return new Animation(imgSequence,duration,false);
+	}
+	public static Animation getDeadAnimation(){
+		Image[] imgSequence = {images.get("dead")};
 		int[] duration = {200};
 		return new Animation(imgSequence,duration,false);
 	}
@@ -121,6 +115,20 @@ public class LukeSkywalker {
 
 	public void decreaseHealth(int damage) {
 		currHealth -= damage;
+	}
+	
+	public boolean isDead(){
+		return currHealth <= 0;
+	}
+	public Color getCurrentHealthColor(){
+		if(currHealth<LukeSkywalker.MAX_HEALTH * 0.70){
+			return Color.orange;
+		}
+		else if(currHealth<LukeSkywalker.MAX_HEALTH * 0.25){
+			return Color.red;
+		}
+		return Color.green;
+			
 	}
 
 

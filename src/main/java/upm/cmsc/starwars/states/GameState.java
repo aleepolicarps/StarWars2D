@@ -1,20 +1,13 @@
 package upm.cmsc.starwars.states;
 
+import static upm.cmsc.starwars.entities.Contstants.*;
+
 import java.net.URISyntaxException;
 
-import org.lwjgl.opengl.Drawable;
-import org.newdawn.slick.Animation;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.state.BasicGameState;
-import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.*;
+import org.newdawn.slick.state.*;
 
 import upm.cmsc.starwars.entities.LukeSkywalker;
-import static upm.cmsc.starwars.entities.Contstants.*;
 
 
 public class GameState extends BasicGameState{
@@ -24,7 +17,7 @@ public class GameState extends BasicGameState{
 	private final float MIN_X = 0;
 	
 	
-	private Animation sprite, right, still,attack,jump;
+	private Animation sprite, right, still,attack,jump,dead;
 	private Image tree,tumbleweed,background,path;
 	private boolean attacking,jumping;
 	private float hVelocity;
@@ -35,10 +28,11 @@ public class GameState extends BasicGameState{
 	private LukeSkywalker luke;
 	
 	private void loadAnimations(){
-		right = luke.getRightAnimation();
-		still = luke.getNoAnimation();
-		attack = luke.getAttackAnimation();
-		jump = luke.getJumpAnimation();
+		right = LukeSkywalker.getRightAnimation();
+		still = LukeSkywalker.getNoAnimation();
+		attack = LukeSkywalker.getAttackAnimation();
+		jump = LukeSkywalker.getJumpAnimation();
+		dead = LukeSkywalker.getDeadAnimation();
 		sprite = still;	
 	}
 	
@@ -76,12 +70,11 @@ public class GameState extends BasicGameState{
 		background.draw();
 		
 		g.setColor(Color.black);
-		g.drawString("Luke Skywalker", 20, 0);
+		g.drawString("Luke Skywalker", 30, 10);
 		g.setColor(Color.black);
-		g.fillRect(20, 20, LukeSkywalker.MAX_HEALTH, 30);
-		g.setColor(Color.green);
-		g.fillRect(20, 20, luke.getCurrHealth(), 30);
-
+		g.fillRect(40, 30, LukeSkywalker.MAX_HEALTH, 20);
+		g.setColor(luke.getCurrentHealthColor());
+		g.fillRect(40, 30, luke.getCurrHealth(), 20);
 		
 		float x = treeX;
 		while(x<background.getWidth()){
@@ -100,7 +93,6 @@ public class GameState extends BasicGameState{
 			path.draw(x,545);
 			x+=background.getWidth();
 		}
-		
 		sprite.draw(luke.getX(),luke.getY());
 	}
 	
@@ -140,7 +132,6 @@ public class GameState extends BasicGameState{
 				attacking = false;
 			}
 		}
-		// TODO Polish jumping / Simulate Gravity
 		else if(gc.getInput().isKeyPressed(Input.KEY_UP) && !jumping){
 			sprite = jump;
 			jumping = true;
@@ -160,6 +151,9 @@ public class GameState extends BasicGameState{
 		}
 		else if(gc.getInput().isKeyPressed(Input.KEY_SPACE)){
 			luke.decreaseHealth(10);
+			if(luke.isDead()){
+				s.enterState(State.GAMEOVER);
+			}
 		}
 		else{
 			sprite = still;
