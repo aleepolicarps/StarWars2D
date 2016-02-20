@@ -18,7 +18,8 @@ import static upm.cmsc.starwars.objects.Contstants.*;
 public class GameState extends BasicGameState{
 	
 	private final float MIN_Y = 510;
-	private final float MAX_X = 200;
+	private final float MAX_X = 300;
+	private final float MIN_X = 0;
 	
 	
 	private Animation sprite, rightMove, noMove,attackMove,jumpMove;
@@ -98,15 +99,23 @@ public class GameState extends BasicGameState{
 		if(gc.getInput().isKeyDown(Input.KEY_RIGHT) && !jumping){
 			sprite = rightMove;	
 			if(luke.getX()<MAX_X){
-				luke.addToX(delta*H_DISPLACEMENT);
+				luke.addToX(delta*H_DISPLACEMENT_FORWARD);
 				if(luke.getX()>MAX_X){
 					luke.setX(MAX_X);
 				}
 			}
 			else{
 				treeX -= delta * 0.05f;
-				tumbleweedX -= delta*H_DISPLACEMENT;
-//				background.addToX(-1*(delta*H_DISPLACEMENT));
+				tumbleweedX -= delta*H_DISPLACEMENT_FORWARD;
+			}
+		}
+		else if(gc.getInput().isKeyDown(Input.KEY_LEFT) && !jumping){
+			sprite = rightMove;	
+			if(luke.getX()<=MAX_X){
+				luke.addToX(-1*delta*H_DISPLACEMENT_BACKWARD);
+				if(luke.getX()<MIN_X){
+					luke.setX(MIN_X);
+				}
 			}
 		}
 		else if(gc.getInput().isKeyPressed(Input.KEY_A) && !attacking){
