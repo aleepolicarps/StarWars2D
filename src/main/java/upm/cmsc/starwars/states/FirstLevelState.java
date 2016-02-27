@@ -215,7 +215,7 @@ public class FirstLevelState extends BasicGameState{
 	private void attack(){
 		for(int i = 0;i<TROOPER_COUNT;i++){
 			StormTrooper st = troopers.get(i);
-			if(!st.isDead() && st.getX()-luke.getX()<=LUKE_TROOPER_DISTANCE){
+			if(!st.isDead() && st.getX()-luke.getX()<=LUKE_TROOPER_DISTANCE && !st.isDying()){
 				st.setDead(true);
 				trooperAnimation.set(i, StormTrooper.getDeadAnimation());
 				return;

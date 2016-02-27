@@ -86,6 +86,11 @@ public class StormTrooper {
 		long currTime = System.currentTimeMillis();
 		return dead && (currTime-timeOfDeath>1000);
 	}
+	
+	public boolean isDying(){
+		long currTime = System.currentTimeMillis();
+		return currTime-timeOfDeath<=1000;
+	}
 
 	public void setDead(boolean dead) {
 		timeOfDeath = System.currentTimeMillis();
