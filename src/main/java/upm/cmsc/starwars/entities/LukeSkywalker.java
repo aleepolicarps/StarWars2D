@@ -16,6 +16,8 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
+import upm.cmsc.starwars.CustomFileUtil;
+
 import static org.apache.commons.io.FilenameUtils.removeExtension;
 import static upm.cmsc.starwars.entities.Contstants.*;
 
@@ -34,10 +36,7 @@ public class LukeSkywalker {
 
 	private void loadSprites() throws SlickException{
 		try{
-			String folderName = this.getClass().getResource("/sprites/luke").toURI().getPath();
-			if(isWindows()){
-				folderName = folderName.substring(1);
-			}
+			String folderName = CustomFileUtil.getFilePath("/sprites/luke");
 			List<File> rawFiles = Files.walk(Paths.get(folderName))
 					.filter(Files::isRegularFile)
 					.map(Path::toFile)
@@ -50,9 +49,7 @@ public class LukeSkywalker {
 			LukeSkywalker.images = images;
 		}  catch (IOException e) {
 			// TODO do something here
-		} catch (URISyntaxException e) {
-			// TODO do something here
-		}
+		} 
 	}
 	
 	public static Animation getRightAnimation(){
