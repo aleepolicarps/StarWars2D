@@ -48,7 +48,7 @@ public class LukeSkywalker {
 			for(File file:rawFiles){
 				images.put(removeExtension(file.getName()), new Image(file.getAbsolutePath()));
 			}
-			this.images = images;
+			LukeSkywalker.images = images;
 		}  catch (IOException e) {
 			// TODO do something here
 		} catch (URISyntaxException e) {

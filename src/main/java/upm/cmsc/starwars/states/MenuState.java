@@ -23,7 +23,7 @@ public class MenuState extends BasicGameState{
 	@Override
 	public void update(GameContainer gc, StateBasedGame s, int delta) throws SlickException {
 		if(gc.getInput().isKeyPressed(Input.KEY_ENTER)){
-			s.enterState(State.GAME);
+			s.enterState(State.FIRST_LEVEL);
 		}
 	}
 
