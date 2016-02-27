@@ -9,6 +9,7 @@ import java.util.List;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.*;
 
+import upm.cmsc.starwars.CustomFileUtil;
 import upm.cmsc.starwars.entities.LukeSkywalker;
 import upm.cmsc.starwars.entities.StormTrooper;
 
@@ -195,21 +196,11 @@ public class FirstLevelState extends BasicGameState{
 	}
 	
 	private void loadImages() throws SlickException{
-		try {
-			try{
-				tree = new Image(this.getClass().getResource("elements/tree.png").toURI().getPath());
-				tumbleweed = new Image(this.getClass().getResource("elements/tumbleweed.png").toURI().getPath());
-				background = new Image(this.getClass().getResource("background/desert.jpg").toURI().getPath());
-				path = new Image(this.getClass().getResource("elements/desert_path.png").toURI().getPath());
-			}catch(NullPointerException e){
-				tree = new Image(this.getClass().getResource("/elements/tree.png").toURI().getPath());
-				tumbleweed = new Image(this.getClass().getResource("/elements/tumbleweed.png").toURI().getPath());
-				background = new Image(this.getClass().getResource("/background/desert.jpg").toURI().getPath());
-				path = new Image(this.getClass().getResource("/elements/desert_path.png").toURI().getPath());
-			}
-		} catch (URISyntaxException e) {
-			// TODO do something here
-		}
+		tree = new Image(CustomFileUtil.getFilePath("/elements/tree.png"));
+		tumbleweed = new Image(CustomFileUtil.getFilePath("/elements/tumbleweed.png"));
+		background = new Image(CustomFileUtil.getFilePath("/background/desert.jpg"));
+		path = new Image(CustomFileUtil.getFilePath("/elements/desert_path.png"));
+
 	}
 	
 	private boolean isLukeColliding(){
