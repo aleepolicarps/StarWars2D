@@ -218,6 +218,7 @@ public class FirstLevelState extends BasicGameState{
 			if(!st.isDead() && st.getX()-luke.getX()<=LUKE_TROOPER_DISTANCE){
 				st.setDead(true);
 				trooperAnimation.set(i, StormTrooper.getDeadAnimation());
+				return;
 			}
 		}
 	}

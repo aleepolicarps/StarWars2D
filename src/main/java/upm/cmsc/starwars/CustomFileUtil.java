@@ -7,7 +7,8 @@ public class CustomFileUtil {
 	public static String getFilePath(String resource){
 		try {
 			String path = CustomFileUtil.class.getResource(resource).toURI().getPath();
-			if(System.getProperty("os.name").equals("Windows")){
+			String os = System.getProperty("os.name").toLowerCase();
+			if(os.contains("windows")){
 				return path.substring(1);
 			}
 			return path;
