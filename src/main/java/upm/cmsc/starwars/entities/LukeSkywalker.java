@@ -17,6 +17,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 import static org.apache.commons.io.FilenameUtils.removeExtension;
+import static upm.cmsc.starwars.entities.Contstants.*;
 
 public class LukeSkywalker {
 	
@@ -32,12 +33,10 @@ public class LukeSkywalker {
 	}
 
 	private void loadSprites() throws SlickException{
-		String folderName = "";
 		try{
-			try {
-				folderName = this.getClass().getResource("sprites/luke").toURI().getPath();
-			} catch(NullPointerException e){
-				folderName = this.getClass().getResource("/sprites/luke").toURI().getPath();
+			String folderName = this.getClass().getResource("/sprites/luke").toURI().getPath();
+			if(isWindows()){
+				folderName = folderName.substring(1);
 			}
 			List<File> rawFiles = Files.walk(Paths.get(folderName))
 					.filter(Files::isRegularFile)

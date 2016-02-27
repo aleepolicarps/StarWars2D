@@ -196,17 +196,20 @@ public class FirstLevelState extends BasicGameState{
 	
 	private void loadImages() throws SlickException{
 		try {
-			try{
-				tree = new Image(this.getClass().getResource("elements/tree.png").toURI().getPath());
-				tumbleweed = new Image(this.getClass().getResource("elements/tumbleweed.png").toURI().getPath());
-				background = new Image(this.getClass().getResource("background/desert.jpg").toURI().getPath());
-				path = new Image(this.getClass().getResource("elements/desert_path.png").toURI().getPath());
-			}catch(NullPointerException e){
-				tree = new Image(this.getClass().getResource("/elements/tree.png").toURI().getPath());
-				tumbleweed = new Image(this.getClass().getResource("/elements/tumbleweed.png").toURI().getPath());
-				background = new Image(this.getClass().getResource("/background/desert.jpg").toURI().getPath());
-				path = new Image(this.getClass().getResource("/elements/desert_path.png").toURI().getPath());
+			String treeFilePath = this.getClass().getResource("/elements/tree.png").toURI().getPath();
+			String tumbleWeedFilePath = this.getClass().getResource("/elements/tumbleweed.png").toURI().getPath();
+			String desertFilePath = this.getClass().getResource("/background/desert.jpg").toURI().getPath();
+			String desertPathFilePath = this.getClass().getResource("/elements/desert_path.png").toURI().getPath();
+			if(isWindows()){
+				treeFilePath = treeFilePath.substring(1);
+				tumbleWeedFilePath = tumbleWeedFilePath.substring(1);
+				desertFilePath = desertFilePath.substring(1);
+				desertPathFilePath = desertPathFilePath.substring(1);
 			}
+			tree = new Image(treeFilePath);
+			tumbleweed = new Image(tumbleWeedFilePath);
+			background = new Image(desertFilePath);
+			path = new Image(desertPathFilePath);
 		} catch (URISyntaxException e) {
 			// TODO do something here
 		}

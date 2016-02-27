@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
-
+import static upm.cmsc.starwars.entities.Contstants.*;
 public class StormTrooper {
 	
 	private static Map<String,Image> images;
@@ -36,12 +36,10 @@ public class StormTrooper {
 	}
 
 	private void loadSprites() throws SlickException{
-		String folderName = "";
 		try{
-			try {
-				folderName = this.getClass().getResource("sprites/trooper").toURI().getPath();
-			} catch(NullPointerException e){
-				folderName = this.getClass().getResource("/sprites/trooper").toURI().getPath();
+			String folderName = this.getClass().getResource("/sprites/trooper").toURI().getPath();
+			if(isWindows()){
+				folderName = folderName.substring(1);
 			}
 			List<File> rawFiles = Files.walk(Paths.get(folderName))
 					.filter(Files::isRegularFile)

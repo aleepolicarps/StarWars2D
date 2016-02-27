@@ -7,4 +7,10 @@ public class Contstants {
 	public static final float H_DISPLACEMENT_BACKWARD = 0.1f;
 	public static final float GRAVITY = 9.8f;
 	public static final float INITIAL_VELOCITY = 5;
+	
+	public static boolean isWindows(){
+		String operatingSystem = System.getProperty("os.name").toLowerCase();
+		return operatingSystem.equals("windows");
+	}
+	
 }
