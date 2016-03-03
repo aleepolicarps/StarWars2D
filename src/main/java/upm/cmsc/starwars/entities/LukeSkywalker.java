@@ -23,15 +23,25 @@ import static upm.cmsc.starwars.entities.Contstants.*;
 
 public class LukeSkywalker {
 	
+	public enum LukeAction {STILL,WALK,JUMP,ATTACK,DEAD}
+	
 	public static final int MAX_HEALTH = 200;
 	
 	private static Map<String,Image> images;
 	private float x = 0;
 	private float y = 0;
 	private int currHealth = MAX_HEALTH;
+	private Animation animation;
+	private Animation still, walk, jump, attack, dead;
+	
+	private static final float H_VELOCITY = 100f;
+	private long timeStarted;
+	private boolean jumping;
 	
 	public LukeSkywalker() throws SlickException{
 		loadSprites();
+		loadAnimations();
+		animation = still;
 	}
 
 	private void loadSprites() throws SlickException{
@@ -52,33 +62,56 @@ public class LukeSkywalker {
 		} 
 	}
 	
-	public static Animation getRightAnimation(){
-		Image[] imgSequence = {images.get("walk1"),images.get("walk2")};
-		int[] duration = {100,100};
-		return new Animation(imgSequence,duration,false);
+	private void loadAnimations(){
+		Image[] imgSequence1 = {images.get("walk1"),images.get("walk2")};
+		int[] duration1 = {100,100};
+		walk = new Animation(imgSequence1,duration1,false);
+		
+		Image[] imgSequence2 = {images.get("stand")};
+		int[] duration2 = {200};
+		still = new Animation(imgSequence2,duration2,false);
+		
+		Image[] imgSequence3 = {images.get("attack1"),images.get("attack2"),images.get("attack3")};
+		int[] duration3 = {50,50,70};
+		attack = new Animation(imgSequence3,duration3,false);
+		
+		Image[] imgSequence4 = {images.get("jump")};
+		int[] duration4 = {200};
+		jump =  new Animation(imgSequence4,duration4,false);
+		
+		Image[] imgSequence5 = {images.get("dead")};
+		int[] duration5 = {200};
+		dead = new Animation(imgSequence5,duration5,false);
+		
 	}
-	public static Animation getNoAnimation(){
-		Image[] imgSequence = {images.get("stand")};
-		int[] duration = {200};
-		return new Animation(imgSequence,duration,false);
+	
+	
+	public Animation getAnimation(){
+		return animation;
 	}
-	public static Animation getAttackAnimation(){
-		Image[] imgSequence = {images.get("attack1"),images.get("attack2"),images.get("attack3")};
-		int[] duration = {50,50,70};
-		return new Animation(imgSequence,duration,false);
+	public void setAnimation(LukeAction action){
+		switch (action) {
+		case STILL:
+			animation = still;
+			break;
+		case WALK:
+			animation = walk;
+			break;
+		case ATTACK:
+			animation = attack;
+			break;
+		case JUMP:
+			animation = jump;
+			break;
+		case DEAD:
+			animation = dead;
+			break;
+		default:
+			animation = still;
+			break;
+		}
 	}
-	public static Animation getJumpAnimation(){
-		Image[] imgSequence = {images.get("jump")};
-		int[] duration = {200};
-		return new Animation(imgSequence,duration,false);
-	}
-	public static Animation getDeadAnimation(){
-		Image[] imgSequence = {images.get("dead")};
-		int[] duration = {200};
-		return new Animation(imgSequence,duration,false);
-	}
-
-
+	
 	public float getX() {
 		return x;
 	}

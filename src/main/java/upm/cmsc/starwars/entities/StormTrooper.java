@@ -22,22 +22,36 @@ import upm.cmsc.starwars.CustomFileUtil;
 import static upm.cmsc.starwars.entities.Contstants.*;
 public class StormTrooper {
 	
+	private static int ctr;
 	private static Map<String,Image> images;
+	
+	private int id = 0;
 	private float x = 0;
 	private float y = 0;
 	private boolean dead;
 	private long timeOfDeath;
+	private Animation animation, attack, deadAnimation;
 	
 	public StormTrooper() throws SlickException{
+		id = ctr;
+		ctr++;
 		loadSprites();
+		loadAnimation();
+		this.animation = attack;
 	}
 	
 	public StormTrooper(float x, float y) throws SlickException{
+		id = ctr;
+		ctr++;
 		this.x = x; 
 		this.y = y;
 		loadSprites();
+		loadAnimation();
+		this.animation = attack;
 	}
-
+	public Animation getAnimation(){
+		return this.animation;
+	}
 	private void loadSprites() throws SlickException{
 		try{
 			String folderName = CustomFileUtil.getFilePath("/sprites/trooper");
@@ -56,16 +70,17 @@ public class StormTrooper {
 		}
 	}
 	
-	public static Animation getAttackAnimation(){
-		Image[] imgSequence = {images.get("shoot1"),images.get("shoot2")};
-		int[] duration = {800,200};
-		return new Animation(imgSequence,duration,false);
+	private void loadAnimation(){
+		Image[] imgSequence1 = {images.get("shoot1"),images.get("shoot2")};
+		int[] duration1 = {2300,700};
+		attack = new Animation(imgSequence1,duration1,false);
+		
+		Image[] imgSequence2 = {images.get("dead1"),images.get("dead2")};
+		int[] duration2 = {300,1000};
+		deadAnimation = new Animation(imgSequence2,duration2,false);
 	}
-	public static Animation getDeadAnimation(){
-		Image[] imgSequence = {images.get("dead1"),images.get("dead2")};
-		int[] duration = {300,1000};
-		return new Animation(imgSequence,duration,false);
-	}
+	
+
 	public float getX() {
 		return x;
 	}
@@ -95,10 +110,31 @@ public class StormTrooper {
 	public void setDead(boolean dead) {
 		timeOfDeath = System.currentTimeMillis();
 		this.dead = dead;
+		this.animation = deadAnimation;
 	}
 	public void addToX(float num){
 		this.x+=num;
 	}
 
-	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		StormTrooper other = (StormTrooper) obj;
+		if (id != other.id)
+			return false;
+		return true;
+	}	
 }
