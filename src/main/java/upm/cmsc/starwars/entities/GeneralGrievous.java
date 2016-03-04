@@ -19,27 +19,23 @@ import org.newdawn.slick.SlickException;
 
 import upm.cmsc.starwars.CustomFileUtil;
 
-public class LukeSkywalker {
+public class GeneralGrievous {
 	
-	
-	public static final long ATTACK_DURATION = 170;
-	public static final long JUMP_DURATION = 250;
 	public static final int MAX_HEALTH = 200;
-	public static final float H_DISPLACEMENT_FORWARD = 0.2f;
-	public static final float H_DISPLACEMENT_BACKWARD = 0.1f;
-	public static final float INITIAL_VELOCITY = 5;
-	public static final float INIT_H_VELOCITY = 50f;
-	public static final int MIN_DIST_FROM_DISTANCE= 30;
+	public static final int DAMAGE = 25;
+	public static final int ATTACK_INTERVAL = 2000;
 	
-	private int damage = 10;	
 	private static Map<String,Image> images;
 	private float x = 0;
 	private float y = 0;
 	private int currHealth = MAX_HEALTH;
 	private Animation animation;
-	private Animation still, walk, jump, attack, dead;
+	private Animation still, walk, attack, dead;
+	private long timeLastAttack;
+	private boolean attacking;
 	
-	public LukeSkywalker() throws SlickException{
+	
+	public GeneralGrievous() throws SlickException{
 		loadSprites();
 		loadAnimations();
 		animation = still;
@@ -47,7 +43,7 @@ public class LukeSkywalker {
 
 	private void loadSprites() throws SlickException{
 		try{
-			String folderName = CustomFileUtil.getFilePath("/sprites/luke");
+			String folderName = CustomFileUtil.getFilePath("/sprites/generalgrievous");
 			List<File> rawFiles = Files.walk(Paths.get(folderName))
 					.filter(Files::isRegularFile)
 					.map(Path::toFile)
@@ -57,7 +53,7 @@ public class LukeSkywalker {
 			for(File file:rawFiles){
 				images.put(removeExtension(file.getName()), new Image(file.getAbsolutePath()));
 			}
-			LukeSkywalker.images = images;
+			GeneralGrievous.images = images;
 		}  catch (IOException e) {
 			// TODO do something here
 		} 
@@ -72,13 +68,10 @@ public class LukeSkywalker {
 		int[] duration2 = {200};
 		still = new Animation(imgSequence2,duration2,false);
 		
-		Image[] imgSequence3 = {images.get("attack1"),images.get("attack2"),images.get("attack3")};
-		int[] duration3 = {50,50,70};
+		Image[] imgSequence3 = {images.get("attack1"),images.get("attack2"),images.get("attack3"),
+				images.get("attack4"),images.get("attack5"),images.get("attack6")};
+		int[] duration3 = {50,50,50,50,50,50};
 		attack = new Animation(imgSequence3,duration3,false);
-		
-		Image[] imgSequence4 = {images.get("jump")};
-		int[] duration4 = {200};
-		jump =  new Animation(imgSequence4,duration4,false);
 		
 		Image[] imgSequence5 = {images.get("dead")};
 		int[] duration5 = {200};
@@ -100,9 +93,6 @@ public class LukeSkywalker {
 			break;
 		case ATTACK:
 			animation = attack;
-			break;
-		case JUMP:
-			animation = jump;
 			break;
 		case DEAD:
 			animation = dead;
@@ -151,22 +141,32 @@ public class LukeSkywalker {
 		return currHealth <= 0;
 	}
 	public Color getCurrentHealthColor(){
-		if(currHealth<LukeSkywalker.MAX_HEALTH * 0.70){
+		if(currHealth<GeneralGrievous.MAX_HEALTH * 0.70){
 			return Color.orange;
 		}
-		else if(currHealth<LukeSkywalker.MAX_HEALTH * 0.25){
+		else if(currHealth<GeneralGrievous.MAX_HEALTH * 0.25){
 			return Color.red;
 		}
 		return Color.green;
 			
 	}
 
-	public int getDamage() {
-		return damage;
+	public long getTimeLastAttack() {
+		return timeLastAttack;
 	}
 
-	public void setDamage(int damage) {
-		this.damage = damage;
+	public void attack(LukeSkywalker luke){
+		timeLastAttack = System.currentTimeMillis();
+		animation = attack;
+		luke.decreaseHealth(DAMAGE);
+		attacking = true;
 	}
+	public boolean isAttacking(){
+		return attacking;
+	}
+	public void endAttack(){
+		attacking = false;
+	}
+
 
 }

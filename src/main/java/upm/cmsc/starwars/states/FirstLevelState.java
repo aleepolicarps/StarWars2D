@@ -1,16 +1,10 @@
 package upm.cmsc.starwars.states;
 
-import static upm.cmsc.starwars.entities.Contstants.ATTACK_DURATION;
-import static upm.cmsc.starwars.entities.Contstants.H_DISPLACEMENT_BACKWARD;
-import static upm.cmsc.starwars.entities.Contstants.H_DISPLACEMENT_FORWARD;
-import static upm.cmsc.starwars.entities.Contstants.INIT_H_VELOCITY;
-import static upm.cmsc.starwars.entities.Contstants.JUMP_DURATION;
+import static upm.cmsc.starwars.entities.Action.*;
+import static upm.cmsc.starwars.entities.LukeSkywalker.*;
 
-import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.jws.soap.SOAPBinding.Style;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -23,9 +17,10 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import upm.cmsc.starwars.CustomFileUtil;
 import upm.cmsc.starwars.Window;
+import upm.cmsc.starwars.entities.Action;
+import upm.cmsc.starwars.entities.GeneralGrievous;
 import upm.cmsc.starwars.entities.Laser;
 import upm.cmsc.starwars.entities.LukeSkywalker;
-import upm.cmsc.starwars.entities.LukeSkywalker.LukeAction;
 import upm.cmsc.starwars.entities.StormTrooper;
 
 
@@ -33,13 +28,11 @@ public class FirstLevelState extends BasicGameState{
 	
 	private final float LUKE_MIN_Y = 510;
 	private final float TROOPER_Y = 525;
-	private final float LASER_Y = 540;
-	private final float MAX_X = 300;
+	private final float LASER_Y = 525;
+	private final float MAX_X = 400;
 	private final float MIN_X = 0;
-	private final int TROOPER_COUNT = 5;
-	private final int LUKE_TROOPER_DISTANCE= 30;
+	private final int TROOPER_COUNT = 1;
 	private final long LASER_INTERVAL = 3000;
-	private final int LASER_DAMAGE = 25;
 	
 	
 	private Image tree,tumbleweed,background,path;
@@ -51,16 +44,17 @@ public class FirstLevelState extends BasicGameState{
 	private float tumbleweedX = -10;
 	
 	private LukeSkywalker luke;
+	private GeneralGrievous general;
 	private List<StormTrooper> troopers = new ArrayList<StormTrooper>();
 	private List<Laser> lasers = new ArrayList<Laser>();
-
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
 		
-		loadLukeAnimations();
+
 		loadImages();
 		loadTroopers();
+		initializeCharacters();
 	}
 
 	@Override
@@ -68,13 +62,11 @@ public class FirstLevelState extends BasicGameState{
 		
 		
 		removeDeadTroopers();
-		if(troopers.isEmpty()){
-			// TODO mega boss? new state?
-		}
 		
 		float x;
 		
 		background.draw();
+		
 		
 		
 		g.setColor(Color.black);
@@ -104,21 +96,23 @@ public class FirstLevelState extends BasicGameState{
 		
 		for(StormTrooper trooper:troopers){
 			trooper.getAnimation().draw(trooper.getX(), trooper.getY());
-			long currTime = System.currentTimeMillis();
-			if(currTime - timeLastBulletFired > LASER_INTERVAL){
-				if(trooper.getX()<=Window.WIDTH && trooper.getX()>= 0 && !trooper.isDead()){
-					lasers.add(new Laser(trooper.getX()-10, TROOPER_Y));
-					timeLastBulletFired = System.currentTimeMillis();
-				}
-			}
 		}
+		
 		
 		luke.getAnimation().draw(luke.getX(),luke.getY());
 		
 		for(Laser laser:lasers){
 			laser.getImage().draw(laser.getX(), laser.getY());
 		}
-		
+		if(troopers.isEmpty()){
+			general.getAnimation().draw(general.getX(),general.getY());
+			g.setColor(Color.black);
+			g.drawString("General Grievous", 620, 10);
+			g.setColor(Color.black);
+			g.fillRect(560, 30, general.MAX_HEALTH, 20);
+			g.setColor(general.getCurrentHealthColor());
+			g.fillRect(560, 30, general.getCurrHealth(), 20);
+		}
 		
 		if(paused){
 			g.setColor(Color.black);
@@ -141,8 +135,8 @@ public class FirstLevelState extends BasicGameState{
 			return;
 		}
 		
-		if(gc.getInput().isKeyDown(Input.KEY_RIGHT) && !jumping && !isLukeCollidingWithTrooper()){
-			luke.setAnimation(LukeAction.WALK);
+		if(gc.getInput().isKeyDown(Input.KEY_RIGHT) && !jumping && !isLukeColliding()){
+			luke.setAnimation(WALK);
 			if(luke.getX()<MAX_X){
 				luke.addToX(delta*H_DISPLACEMENT_FORWARD);
 				if(luke.getX()>MAX_X){
@@ -151,6 +145,7 @@ public class FirstLevelState extends BasicGameState{
 			}
 			else{
 				treeX -= delta * 0.05f;
+				general.addToX(-1*delta*H_DISPLACEMENT_FORWARD);
 				tumbleweedX -= delta*H_DISPLACEMENT_FORWARD;
 				for(StormTrooper trooper: troopers){
 					trooper.addToX(-1*delta*H_DISPLACEMENT_FORWARD);
@@ -160,17 +155,17 @@ public class FirstLevelState extends BasicGameState{
 			
 		}
 		else if(gc.getInput().isKeyDown(Input.KEY_LEFT) && !jumping){
-			luke.setAnimation(LukeAction.WALK);
+			luke.setAnimation(WALK);
 			if(luke.getX()<=MAX_X){
 				luke.addToX(-1*delta*H_DISPLACEMENT_BACKWARD);
 				if(luke.getX()<MIN_X){
 					luke.setX(MIN_X);
-					luke.setAnimation(LukeAction.STILL);
+					luke.setAnimation(STILL);
 				}
 			}
 		}
-		else if(gc.getInput().isKeyPressed(Input.KEY_A) && !attacking){
-				luke.setAnimation(LukeAction.ATTACK);
+		else if(gc.getInput().isKeyPressed(Input.KEY_A) && !attacking && !jumping){
+				luke.setAnimation(ATTACK);
 				attacking = true;
 				timeStarted = System.currentTimeMillis();
 				attack();	
@@ -183,7 +178,7 @@ public class FirstLevelState extends BasicGameState{
 			}
 		}
 		else if(gc.getInput().isKeyPressed(Input.KEY_UP) && !jumping){
-			luke.setAnimation(LukeAction.JUMP);
+			luke.setAnimation(JUMP);
 			jumping = true;
 			timeStarted = System.currentTimeMillis();
 			hVelocity = INIT_H_VELOCITY;
@@ -200,7 +195,7 @@ public class FirstLevelState extends BasicGameState{
 			}
 		}
 		else{
-			luke.setAnimation(LukeAction.STILL);
+			luke.setAnimation(STILL);
 		}
 		
 		
@@ -214,7 +209,24 @@ public class FirstLevelState extends BasicGameState{
 			laser.updateXPosition(delta);
 		}
 		checkIfAttacked();
+		
+		general.getAnimation().update(delta);
 		luke.getAnimation().update(delta);
+		
+		
+		for(StormTrooper trooper:troopers){
+			long currTime = System.currentTimeMillis();
+			if(currTime - timeLastBulletFired > LASER_INTERVAL){
+				if(trooper.getX()<=Window.WIDTH && trooper.getX()>= 0 && !trooper.isDead() 
+						&& !trooper.isDying()){
+					lasers.add(new Laser(trooper.getX()-10, LASER_Y));
+					timeLastBulletFired = System.currentTimeMillis();
+				}
+			}
+		}
+		if(general.isDead()){
+			s.enterState(State.SECOND_LEVEL);
+		}
 		if(luke.isDead()){
 			s.enterState(State.GAMEOVER);
 		}
@@ -235,9 +247,14 @@ public class FirstLevelState extends BasicGameState{
 
 	}
 	
-	private void loadLukeAnimations() throws SlickException{
+	private void initializeCharacters() throws SlickException{
 		luke = new LukeSkywalker();
 		luke.setY(LUKE_MIN_Y);
+		
+		general = new GeneralGrievous();
+		general.setY(LUKE_MIN_Y - 8);
+		StormTrooper laStormTrooper = troopers.get(troopers.size()-1);
+		general.setX(laStormTrooper.getX() + Window.WIDTH);
 		
 	}
 	
@@ -259,11 +276,14 @@ public class FirstLevelState extends BasicGameState{
 		}
 	}
 	
-	private boolean isLukeCollidingWithTrooper(){
+	private boolean isLukeColliding(){
 		for(StormTrooper st:troopers){
-			if(!st.isDead() && st.getX()-luke.getX()<=LUKE_TROOPER_DISTANCE){
+			if(!st.isDead() && st.getX()-luke.getX()<=MIN_DIST_FROM_DISTANCE){
 				return true;
 			}
+		}
+		if(general.getX()-luke.getX()<=MIN_DIST_FROM_DISTANCE){
+			return true;
 		}
 		return false;
 	}
@@ -273,20 +293,35 @@ public class FirstLevelState extends BasicGameState{
 			float lukeRight = ((float)luke.getAnimation().getWidth()/2) + luke.getX();
 			if(laser.getX() <= lukeRight && laser.getX()>=luke.getX() 
 					&& !jumping){
-				luke.decreaseHealth(LASER_DAMAGE);
+				luke.decreaseHealth(Laser.DAMAGE);
 				lasers.remove(laser);
 				return;
 			}
+		}
+		long timeDiff = System.currentTimeMillis() - general.getTimeLastAttack();
+		if(general.getX()-luke.getX()<=MIN_DIST_FROM_DISTANCE){
+			if(timeDiff >= GeneralGrievous.ATTACK_INTERVAL){
+				general.attack(luke);
+			}
+			else if(timeDiff >= 600){
+				general.setAnimation(STILL);
+			}
+		}
+		else if(timeDiff >= 600){
+			general.setAnimation(Action.STILL);
 		}
 	}
 	
 	private void attack(){
 		for(StormTrooper trooper: troopers){
-			if(!trooper.isDead() && trooper.getX() - luke.getX() <= LUKE_TROOPER_DISTANCE + 20
-					&& !trooper.isDying()){
+			if(!trooper.isDead() && trooper.getX() - luke.getX() <= MIN_DIST_FROM_DISTANCE + 20
+					&& !trooper.isDying() && !jumping){
 				trooper.setDead(true);
 				return;
 			}
+		}
+		if(general.getX()-luke.getX()<=MIN_DIST_FROM_DISTANCE){
+			general.decreaseHealth(luke.getDamage());
 		}
 	}
 }

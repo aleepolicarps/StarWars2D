@@ -4,7 +4,6 @@ import static org.apache.commons.io.FilenameUtils.removeExtension;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,8 +17,6 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 import upm.cmsc.starwars.CustomFileUtil;
-
-import static upm.cmsc.starwars.entities.Contstants.*;
 public class StormTrooper {
 	
 	private static int ctr;
