@@ -22,7 +22,6 @@ public class GameOverState extends BasicGameState{
 	public void render(GameContainer gc, StateBasedGame s, Graphics g) throws SlickException {
 		g.setColor(Color.white);
 		g.drawString("Game Over", 50, 50);
-		LukeSkywalker.getDeadAnimation().draw(150,10);
 	}
 
 	@Override
