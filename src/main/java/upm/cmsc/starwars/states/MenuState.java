@@ -1,7 +1,6 @@
 package upm.cmsc.starwars.states;
 
 
-
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -9,12 +8,13 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-
-import upm.cmsc.starwars.CustomFileUtil;
+import org.newdawn.slick.state.transition.FadeInTransition;
+import org.newdawn.slick.state.transition.FadeOutTransition;
 
 
 
 public class MenuState extends BasicGameState{
+	
 	Image bg;
 	Image title;
 	Image saber;
@@ -27,14 +27,14 @@ public class MenuState extends BasicGameState{
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
 		
-		bg = new Image(CustomFileUtil.getFilePath("/menu/bg.png"));
-		title=new Image(CustomFileUtil.getFilePath("/menu/title.png"));
-		saber=new Image(CustomFileUtil.getFilePath("/menu/saber.png"));
-		start=new Image(CustomFileUtil.getFilePath("/menu/start.png"));
-		storyboard=new Image(CustomFileUtil.getFilePath("/menu/storyboard.png"));
-		instructions=new Image(CustomFileUtil.getFilePath("/menu/instructions.png"));
-		credits=new Image(CustomFileUtil.getFilePath("/menu/credits.png"));
-		exit=new Image(CustomFileUtil.getFilePath("/menu/exit.png"));
+		bg = new Image("menu/bg.png");
+		title = new Image("menu/title.png");
+		saber = new Image("menu/saber.png");
+		start = new Image("menu/start.png");
+		storyboard = new Image("menu/storyboard.png");
+		instructions = new Image("menu/instructions.png");
+		credits = new Image("menu/credits.png");
+		exit = new Image("menu/exit.png");
 
 	}
 	
@@ -42,59 +42,56 @@ public class MenuState extends BasicGameState{
 	public void render(GameContainer gc, StateBasedGame s, Graphics g) throws SlickException {
 		
 		g.drawImage(bg, 0, 0);
-		title.draw(230,20);
-		saber.draw(240,170);
-		start.draw(310,250);
-		storyboard.draw(220,310);
-		instructions.draw(220,370);
-		credits.draw(290,420);
-		exit.draw(320,480);
-		
+		title.draw(240,20);
+		saber.draw(250,170);
+		start.draw(320,250);
+		storyboard.draw(240,310);
+		instructions.draw(240,370);
+		credits.draw(300,420);
+		exit.draw(330,480);
 		
 	}
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame s, int delta) throws SlickException {
 		
-		int posX= Mouse.getX();
-		int posY= Mouse.getY();
-	
-		//To check coordinates
+		int posX = Mouse.getX();
+		int posY = Mouse.getY();
+		
 		//start
-		if((posX>220 && posX<520)&& (posY>310 && posY<340)){
+		if((posX>310 && posX<460)&& (posY>320 && posY<350)){
 			if(Mouse.isButtonDown(0)){
-				s.enterState(State.FIRST_LEVEL);
-				}
+				s.enterState(6, new FadeOutTransition(), new FadeInTransition());
+			}
 		}
 				
 		//storyboard
-		if((posX>310 && posX<453)&& (posY>250 && posY<280)){
+		if((posX>235 && posX<540)&& (posY>260 && posY<290)){
 			if(Mouse.isButtonDown(0)){
-				s.enterState(State.GAMEOVER);
+				s.enterState(4);
 			}
 		}
-		
 		
 		//instructions
-		if((posX>220 && posX<529)&& (posY>370 && posY<400)){
+		if((posX>240 && posX<550)&& (posY>200 && posY<230)){
 			if(Mouse.isButtonDown(0)){
-				s.enterState(1);
+				s.enterState(5);
 			}
 		}
+		
 		//credits
-		if((posX>290 && posX<479)&& (posY>420 && posY<450)){
+		if((posX>300 && posX<485)&& (posY>150 && posY<180)){
 			if(Mouse.isButtonDown(0)){
-				s.enterState(1);
+				s.enterState(3);
 			}
 		}
 		
 		//exit
-		if((posX>320 && posX<423)&& (posY>480 && posY<510)){
+		if((posX>330 && posX<430)&& (posY>90 && posY<120)){
 			if(Mouse.isButtonDown(0)){
 				System.exit(0);
 			}
 		}
-		
 				
 	}
 
