@@ -1,6 +1,5 @@
 package upm.cmsc.starwars.states;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -9,7 +8,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import upm.cmsc.starwars.entities.LukeSkywalker;
+import upm.cmsc.starwars.CustomFileUtil;
 
 // TODO TEST STATE (needs refactoring)
 public class GameOverState extends BasicGameState{
@@ -18,8 +17,8 @@ public class GameOverState extends BasicGameState{
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
-		bg=new Image("menu/bg.png");
-		gameover=new Image("menu/gameover.png");	
+		bg = new Image(CustomFileUtil.getFilePath("/menu/bg.png"));
+		gameover = new Image(CustomFileUtil.getFilePath("/menu/gameover.png"));	
 	}
 	
 	@Override

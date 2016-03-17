@@ -10,6 +10,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import upm.cmsc.starwars.CustomFileUtil;
+
 
 
 public class MenuState extends BasicGameState{
@@ -25,14 +27,14 @@ public class MenuState extends BasicGameState{
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
 		
-		bg=new Image("menu/bg.png");
-		title=new Image("menu/title.png");
-		saber=new Image("menu/saber.png");
-		start=new Image("menu/start.png");
-		storyboard=new Image("menu/storyboard.png");
-		instructions=new Image("menu/instructions.png");
-		credits=new Image("menu/credits.png");
-		exit=new Image("menu/exit.png");
+		bg = new Image(CustomFileUtil.getFilePath("/menu/bg.png"));
+		title=new Image(CustomFileUtil.getFilePath("/menu/title.png"));
+		saber=new Image(CustomFileUtil.getFilePath("/menu/saber.png"));
+		start=new Image(CustomFileUtil.getFilePath("/menu/start.png"));
+		storyboard=new Image(CustomFileUtil.getFilePath("/menu/storyboard.png"));
+		instructions=new Image(CustomFileUtil.getFilePath("/menu/instructions.png"));
+		credits=new Image(CustomFileUtil.getFilePath("/menu/credits.png"));
+		exit=new Image(CustomFileUtil.getFilePath("/menu/exit.png"));
 
 	}
 	
