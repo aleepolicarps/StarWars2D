@@ -4,6 +4,7 @@ import org.lwjgl.input.Mouse;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -46,8 +47,8 @@ public class InstructState extends BasicGameState{
 		int posY= Mouse.getY();
 		
 		if((posX>320 && posX<450)&& (posY>70 && posY<95)){
-			if(Mouse.isButtonDown(0)){
-				s.enterState(1);
+			if(Mouse.isButtonDown(Input.MOUSE_LEFT_BUTTON)){
+				s.enterState(State.MENU);
 			}
 		}
 

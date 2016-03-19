@@ -5,7 +5,13 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
-import upm.cmsc.starwars.states.*;
+import upm.cmsc.starwars.states.CreditsState;
+import upm.cmsc.starwars.states.FirstLevelState;
+import upm.cmsc.starwars.states.GameOverState;
+import upm.cmsc.starwars.states.InstructState;
+import upm.cmsc.starwars.states.MenuState;
+import upm.cmsc.starwars.states.SecondLevelState;
+import upm.cmsc.starwars.states.StoryBoardState;
 
 public class Engine extends StateBasedGame {
 

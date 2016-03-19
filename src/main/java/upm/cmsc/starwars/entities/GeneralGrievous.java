@@ -22,7 +22,7 @@ import upm.cmsc.starwars.CustomFileUtil;
 public class GeneralGrievous {
 	
 	public static final int MAX_HEALTH = 200;
-	public static final int DAMAGE = 25;
+	public static final int DAMAGE = 10;
 	public static final int ATTACK_INTERVAL = 2000;
 	
 	private static Map<String,Image> images;

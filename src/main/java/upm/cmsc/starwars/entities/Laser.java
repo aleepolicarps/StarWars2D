@@ -46,7 +46,7 @@ public class Laser {
 	 }
 	 
 	 private void loadImage() throws SlickException{
-		 image = new Image(CustomFileUtil.getFilePath("/elements/laser.png"));
+		 image = new Image(CustomFileUtil.getFilePath("/elements/laser2.png"));
 	 }
  
 }
