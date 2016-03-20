@@ -58,14 +58,14 @@ public class SecondLevelState extends BasicGameState{
 		
 		
 		loadImages();
-		loadTroopers();
+		loadEnemyUnits();
 		initializeCharacters();
 	}
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame s, Graphics g) throws SlickException {
 		
-		removeDeadTroopers();
+		removeDeadEnemyUnits();
 		
 		float x;
 		
@@ -215,15 +215,6 @@ public class SecondLevelState extends BasicGameState{
 		}
 	}
 	
-	private void loadTroopers() throws SlickException{
-		float x = 0;
-		for(int i=0;i<TROOPER_COUNT;i++){
-			x+=500+Math.random()*1000;
-			troopers.add(new StormTrooper(x,TROOPER_Y));
-		} 
-
-	}
-	
 	private void initializeCharacters() throws SlickException{
 		luke = new LukeSkywalker();
 		luke.setY(LUKE_MIN_Y);
@@ -239,7 +230,15 @@ public class SecondLevelState extends BasicGameState{
 		background = new Image(CustomFileUtil.getFilePath("/background/spaceship_interior.png"));
 	}
 	
-	private void removeDeadTroopers(){
+	private void loadEnemyUnits() throws SlickException{
+		float x = 0;
+		for(int i=0;i<TROOPER_COUNT;i++){
+			x+=500+Math.random()*1000;
+			troopers.add(new StormTrooper(x,TROOPER_Y));
+		} 
+	}
+		
+	private void removeDeadEnemyUnits(){
 		for(int i=0;i<troopers.size();i++){
 			StormTrooper trooper = troopers.get(i);
 			float trooperRight = trooper.getX() + trooper.getAnimation().getWidth();

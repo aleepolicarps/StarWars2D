@@ -231,22 +231,7 @@ public class FirstLevelState extends BasicGameState{
 			s.enterState(State.GAMEOVER);
 		}
 	}
-	@Override
-	public int getID() {
-		return State.FIRST_LEVEL;
-	}
-	
-	
-	
-	private void loadEnemyUnits() throws SlickException{
-		float x = 0;
-		for(int i=0;i<DROID_COUNT;i++){
-			x+=500+Math.random()*1000;
-			droids.add(new BattleDroid(x,DROID_Y));
-		} 
 
-	}
-	
 	private void initializeCharacters() throws SlickException{
 		luke = new LukeSkywalker();
 		luke.setY(LUKE_MIN_Y);
@@ -263,6 +248,14 @@ public class FirstLevelState extends BasicGameState{
 		tumbleweed = new Image(CustomFileUtil.getFilePath("/elements/tumbleweed.png"));
 		background = new Image(CustomFileUtil.getFilePath("/background/desert.jpg"));
 		path = new Image(CustomFileUtil.getFilePath("/elements/desert_path.png"));
+	}
+	
+	private void loadEnemyUnits() throws SlickException{
+		float x = 0;
+		for(int i=0;i<DROID_COUNT;i++){
+			x+=500+Math.random()*1000;
+			droids.add(new BattleDroid(x,DROID_Y));
+		} 
 	}
 	
 	private void removeDeadEnemyUnits(){
@@ -323,5 +316,10 @@ public class FirstLevelState extends BasicGameState{
 		if(general.getX()-luke.getX()<=MIN_DIST_FROM_DISTANCE){
 			general.decreaseHealth(luke.getDamage());
 		}
+	}
+	
+	@Override
+	public int getID() {
+		return State.FIRST_LEVEL;
 	}
 }
