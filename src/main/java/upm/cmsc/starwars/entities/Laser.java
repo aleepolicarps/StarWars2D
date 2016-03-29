@@ -7,7 +7,10 @@ import upm.cmsc.starwars.CustomFileUtil;
 
 public class Laser {
 	
+	public static final int DAMAGE = 25;
+	
 	private final float VELOCITY = 0.3f;
+
 	
 	 private float x;
 	 private float y;
@@ -43,7 +46,7 @@ public class Laser {
 	 }
 	 
 	 private void loadImage() throws SlickException{
-		 image = new Image(CustomFileUtil.getFilePath("/elements/laser.png"));
+		 image = new Image(CustomFileUtil.getFilePath("/elements/laser2.png"));
 	 }
  
 }

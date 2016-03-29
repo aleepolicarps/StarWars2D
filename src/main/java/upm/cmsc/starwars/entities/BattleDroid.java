@@ -17,10 +17,10 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 import upm.cmsc.starwars.CustomFileUtil;
-public class StormTrooper {
-	
+public class BattleDroid {
 	private int ctr;
 	private Map<String,Image> images;
+	
 	private int id = 0;
 	private float x = 0;
 	private float y = 0;
@@ -28,7 +28,7 @@ public class StormTrooper {
 	private long timeOfDeath;
 	private Animation animation, attack, deadAnimation;
 	
-	public StormTrooper() throws SlickException{
+	public BattleDroid() throws SlickException{
 		id = ctr;
 		ctr++;
 		loadSprites();
@@ -36,7 +36,7 @@ public class StormTrooper {
 		this.animation = attack;
 	}
 	
-	public StormTrooper(float x, float y) throws SlickException{
+	public BattleDroid(float x, float y) throws SlickException{
 		id = ctr;
 		ctr++;
 		this.x = x; 
@@ -50,7 +50,7 @@ public class StormTrooper {
 	}
 	private void loadSprites() throws SlickException{
 		try{
-			String folderName = CustomFileUtil.getFilePath("/sprites/trooper");
+			String folderName = CustomFileUtil.getFilePath("/sprites/battledroid");
 			List<File> rawFiles = Files.walk(Paths.get(folderName))
 					.filter(Files::isRegularFile)
 					.map(Path::toFile)
@@ -67,11 +67,11 @@ public class StormTrooper {
 	}
 	
 	private void loadAnimation(){
-		Image[] imgSequence1 = {images.get("shoot1"),images.get("shoot2")};
+		Image[] imgSequence1 = {images.get("attack1"),images.get("attack2")};
 		int[] duration1 = {2300,700};
 		attack = new Animation(imgSequence1,duration1,false);
 		
-		Image[] imgSequence2 = {images.get("dead1"),images.get("dead2")};
+		Image[] imgSequence2 = {images.get("fall"),images.get("lose")};
 		int[] duration2 = {300,1000};
 		deadAnimation = new Animation(imgSequence2,duration2,false);
 	}
@@ -128,7 +128,7 @@ public class StormTrooper {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		StormTrooper other = (StormTrooper) obj;
+		BattleDroid other = (BattleDroid) obj;
 		if (id != other.id)
 			return false;
 		return true;

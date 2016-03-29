@@ -5,7 +5,13 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
-import upm.cmsc.starwars.states.*;
+import upm.cmsc.starwars.states.CreditsState;
+import upm.cmsc.starwars.states.FirstLevelState;
+import upm.cmsc.starwars.states.GameOverState;
+import upm.cmsc.starwars.states.InstructState;
+import upm.cmsc.starwars.states.MenuState;
+import upm.cmsc.starwars.states.SecondLevelState;
+import upm.cmsc.starwars.states.StoryBoardState;
 
 public class Engine extends StateBasedGame {
 
@@ -22,7 +28,12 @@ public class Engine extends StateBasedGame {
 		gc.setShowFPS(false);
 		gc.setVSync(true);
 		
+		this.addState(new MenuState());
+		this.addState(new InstructState());
+		this.addState(new StoryBoardState());
+		this.addState(new CreditsState());
 		this.addState(new FirstLevelState());
+		this.addState(new SecondLevelState());
 		this.addState(new GameOverState());
 	}
 

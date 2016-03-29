@@ -26,52 +26,55 @@ import org.newdawn.slick.state.StateBasedGame;
 import upm.cmsc.starwars.CustomFileUtil;
 import upm.cmsc.starwars.Window;
 import upm.cmsc.starwars.entities.Action;
-import upm.cmsc.starwars.entities.BattleDroid;
 import upm.cmsc.starwars.entities.GeneralGrievous;
 import upm.cmsc.starwars.entities.Laser;
 import upm.cmsc.starwars.entities.LukeSkywalker;
+import upm.cmsc.starwars.entities.StormTrooper;
 
-public class FirstLevelState extends BasicGameState{
+public class SecondLevelState extends BasicGameState{
 	
-	private final float LUKE_MIN_Y = 510;
-	private final float DROID_Y = 520;
-	private final float LASER_Y = 525;
+	private final float LUKE_MIN_Y = 335;
+	private final float TROOPER_Y = 350;
+	private final float LASER_Y = 350;
 	private final float MAX_X = 400;
 	private final float MIN_X = 0;
-	private final int DROID_COUNT = 1;
+	private final int TROOPER_COUNT = 5;
 	private final long LASER_INTERVAL = 3000;
 	
-	
-	private Image tree,tumbleweed,background,path;
+	private Image background;
 	private boolean attacking,jumping,paused;
 	private float hVelocity;
 	private long timeStarted;
 	private long timeLastBulletFired;
-	private float treeX = 10;
-	private float tumbleweedX = -10;
+	private float bgX = 0;
 	
 	private LukeSkywalker luke;
 	private GeneralGrievous general;
-	private List<BattleDroid> droids = new ArrayList<BattleDroid>();
+	private List<StormTrooper> troopers = new ArrayList<StormTrooper>();
 	private List<Laser> lasers = new ArrayList<Laser>();
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
 		
+		
 		loadImages();
-		loadEnemyUnits();
+		loadTroopers();
 		initializeCharacters();
 	}
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame s, Graphics g) throws SlickException {
 		
-		removeDeadEnemyUnits();
+		removeDeadTroopers();
 		
 		float x;
 		
 		background.draw();
-		
+		x = bgX;
+		while(x<background.getWidth()){
+			background.draw(x, 0);
+			x+=800;
+		}
 		g.setColor(Color.black);
 		g.drawString("Luke Skywalker", 30, 10);
 		g.setColor(Color.black);
@@ -79,26 +82,8 @@ public class FirstLevelState extends BasicGameState{
 		g.setColor(luke.getCurrentHealthColor());
 		g.fillRect(40, 30, luke.getCurrHealth(), 20);
 		
-		x = treeX;
-		while(x<background.getWidth()){
-			tree.draw(x, 300);
-			x+=500;
-		}
-		
-		x = tumbleweedX;
-		while(x<background.getWidth()){
-			tumbleweed.draw(x,420);
-			x+=20;
-		}
-		
-		x = tumbleweedX;
-		while(x<background.getWidth()){
-			path.draw(x,545);
-			x+=background.getWidth();
-		}
-		
-		for(BattleDroid droid:droids){
-			droid.getAnimation().draw(droid.getX(), droid.getY());
+		for(StormTrooper trooper:troopers){
+			trooper.getAnimation().draw(trooper.getX(), trooper.getY());
 		}
 		
 		luke.getAnimation().draw(luke.getX(),luke.getY());
@@ -106,8 +91,7 @@ public class FirstLevelState extends BasicGameState{
 		for(Laser laser:lasers){
 			laser.getImage().draw(laser.getX(), laser.getY());
 		}
-		
-		if(droids.isEmpty()){
+		if(troopers.isEmpty()){
 			general.getAnimation().draw(general.getX(),general.getY());
 			g.setColor(Color.black);
 			g.drawString("General Grievous", 620, 10);
@@ -121,12 +105,11 @@ public class FirstLevelState extends BasicGameState{
 			g.setColor(Color.black);
 			g.drawString("PAUSED", 370, 200);
 		}
-		
 	}
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame s, int delta) throws SlickException {
-				
+		
 		if(gc.getInput().isKeyPressed(Input.KEY_SPACE)){
 			paused = !paused;
 			gc.setPaused(paused);
@@ -145,11 +128,10 @@ public class FirstLevelState extends BasicGameState{
 				}
 			}
 			else{
-				treeX -= delta * 0.05f;
+				bgX -= delta * 0.2f;
 				general.addToX(-1*delta*H_DISPLACEMENT_FORWARD);
-				tumbleweedX -= delta*H_DISPLACEMENT_FORWARD;
-				for(BattleDroid droid: droids){
-					droid.addToX(-1*delta*H_DISPLACEMENT_FORWARD);
+				for(StormTrooper trooper: troopers){
+					trooper.addToX(-1*delta*H_DISPLACEMENT_FORWARD);
 				}
 			}
 			
@@ -199,9 +181,10 @@ public class FirstLevelState extends BasicGameState{
 			luke.setAnimation(STILL);
 		}
 		
-		for(BattleDroid droid:droids){
-			if(!droid.isDead()){
-				droid.getAnimation().update(delta);
+		
+		for(StormTrooper trooper:troopers){
+			if(!trooper.isDead()){
+				trooper.getAnimation().update(delta);
 			}
 		}
 		
@@ -214,35 +197,29 @@ public class FirstLevelState extends BasicGameState{
 		luke.getAnimation().update(delta);
 		
 		
-		for(BattleDroid droid:droids){
+		for(StormTrooper trooper:troopers){
 			long currTime = System.currentTimeMillis();
 			if(currTime - timeLastBulletFired > LASER_INTERVAL){
-				if(droid.getX()<=Window.WIDTH && droid.getX()>= 0 && !droid.isDead() 
-						&& !droid.isDying()){
-					lasers.add(new Laser(droid.getX()-10, LASER_Y));
+				if(trooper.getX()<=Window.WIDTH && trooper.getX()>= 0 && !trooper.isDead() 
+						&& !trooper.isDying()){
+					lasers.add(new Laser(trooper.getX()-10, LASER_Y));
 					timeLastBulletFired = System.currentTimeMillis();
 				}
 			}
 		}
 		if(general.isDead()){
-			s.enterState(State.SECOND_LEVEL);
+			s.enterState(State.SECOND_LEVEL); // TODO change this according to which level is next
 		}
 		if(luke.isDead()){
 			s.enterState(State.GAMEOVER);
 		}
 	}
-	@Override
-	public int getID() {
-		return State.FIRST_LEVEL;
-	}
 	
-	
-	
-	private void loadEnemyUnits() throws SlickException{
+	private void loadTroopers() throws SlickException{
 		float x = 0;
-		for(int i=0;i<DROID_COUNT;i++){
+		for(int i=0;i<TROOPER_COUNT;i++){
 			x+=500+Math.random()*1000;
-			droids.add(new BattleDroid(x,DROID_Y));
+			troopers.add(new StormTrooper(x,TROOPER_Y));
 		} 
 
 	}
@@ -253,31 +230,28 @@ public class FirstLevelState extends BasicGameState{
 		
 		general = new GeneralGrievous();
 		general.setY(LUKE_MIN_Y - 8);
-		BattleDroid laBattleDroid = droids.get(droids.size()-1);
-		general.setX(laBattleDroid.getX() + Window.WIDTH);
+		StormTrooper laStormTrooper = troopers.get(troopers.size()-1);
+		general.setX(laStormTrooper.getX() + Window.WIDTH);
 		
 	}
 	
 	private void loadImages() throws SlickException{
-		tree = new Image(CustomFileUtil.getFilePath("/elements/tree.png"));
-		tumbleweed = new Image(CustomFileUtil.getFilePath("/elements/tumbleweed.png"));
-		background = new Image(CustomFileUtil.getFilePath("/background/desert.jpg"));
-		path = new Image(CustomFileUtil.getFilePath("/elements/desert_path.png"));
+		background = new Image(CustomFileUtil.getFilePath("/background/spaceship_interior.png"));
 	}
 	
-	private void removeDeadEnemyUnits(){
-		for(int i=0;i<droids.size();i++){
-			BattleDroid droid = droids.get(i);
-			float droidRight = droid.getX() + droid.getAnimation().getWidth();
-			if(droid.isDead() && droidRight<= 0 ){
-				droids.remove(i);
+	private void removeDeadTroopers(){
+		for(int i=0;i<troopers.size();i++){
+			StormTrooper trooper = troopers.get(i);
+			float trooperRight = trooper.getX() + trooper.getAnimation().getWidth();
+			if(trooper.isDead() && trooperRight<= 0 ){
+				troopers.remove(i);
 				i--;
 			}
 		}
 	}
 	
 	private boolean isLukeColliding(){
-		for(BattleDroid st:droids){
+		for(StormTrooper st:troopers){
 			if(!st.isDead() && st.getX()-luke.getX()<=MIN_DIST_FROM_DISTANCE){
 				return true;
 			}
@@ -313,10 +287,10 @@ public class FirstLevelState extends BasicGameState{
 	}
 	
 	private void attack(){
-		for(BattleDroid droid: droids){
-			if(!droid.isDead() && droid.getX() - luke.getX() <= MIN_DIST_FROM_DISTANCE + 20
-					&& !droid.isDying() && !jumping){
-				droid.setDead(true);
+		for(StormTrooper trooper: troopers){
+			if(!trooper.isDead() && trooper.getX() - luke.getX() <= MIN_DIST_FROM_DISTANCE + 20
+					&& !trooper.isDying() && !jumping){
+				trooper.setDead(true);
 				return;
 			}
 		}
@@ -324,4 +298,10 @@ public class FirstLevelState extends BasicGameState{
 			general.decreaseHealth(luke.getDamage());
 		}
 	}
+
+	@Override
+	public int getID() {
+		return State.SECOND_LEVEL;
+	}
+
 }
