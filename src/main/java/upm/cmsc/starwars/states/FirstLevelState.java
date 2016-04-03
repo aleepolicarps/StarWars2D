@@ -188,11 +188,15 @@ public class FirstLevelState extends BasicGameState{
 			long timeCurr = System.currentTimeMillis();
 			if((timeCurr-timeStarted<JUMP_DURATION)&&hVelocity>0){
 				luke.addToY(hVelocity*-1);
-				hVelocity -= delta;
+				hVelocity -= 5;
 			}
 			else if(timeCurr-timeStarted>JUMP_DURATION){
-				jumping=false;
-				luke.setY(LUKE_MIN_Y);
+				hVelocity += 5;
+				luke.addToY(hVelocity);
+				if(hVelocity >= INIT_H_VELOCITY){
+					jumping=false;
+					luke.setY(LUKE_MIN_Y);
+				}
 			}
 		}
 		else{
@@ -225,7 +229,7 @@ public class FirstLevelState extends BasicGameState{
 			}
 		}
 		if(general.isDead()){
-			s.enterState(State.SECOND_LEVEL);
+			s.enterState(State.THIRD_LEVEL);
 		}
 		if(luke.isDead()){
 			s.enterState(State.GAMEOVER);

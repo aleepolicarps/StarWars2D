@@ -31,14 +31,14 @@ import upm.cmsc.starwars.entities.Laser;
 import upm.cmsc.starwars.entities.LukeSkywalker;
 import upm.cmsc.starwars.entities.StormTrooper;
 
-public class SecondLevelState extends BasicGameState{
+public class ThirdLevelState extends BasicGameState{
 	
 	private final float LUKE_MIN_Y = 335;
 	private final float TROOPER_Y = 350;
 	private final float LASER_Y = 350;
 	private final float MAX_X = 400;
 	private final float MIN_X = 0;
-	private final int TROOPER_COUNT = 1;
+	private final int TROOPER_COUNT = 5;
 	private final long LASER_INTERVAL = 3000;
 	
 	private Image background;
@@ -230,7 +230,7 @@ public class SecondLevelState extends BasicGameState{
 	}
 	
 	private void loadImages() throws SlickException{
-		background = new Image(CustomFileUtil.getFilePath("/background/spaceship_interior.png"));
+		background = new Image(CustomFileUtil.getFilePath("/background/starfield.png"));
 	}
 	
 	private void loadEnemyUnits() throws SlickException{
@@ -303,7 +303,8 @@ public class SecondLevelState extends BasicGameState{
 
 	@Override
 	public int getID() {
-		return State.SECOND_LEVEL;
+		return State.THIRD_LEVEL;
 	}
 
 }
+

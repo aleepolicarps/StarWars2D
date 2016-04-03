@@ -12,6 +12,7 @@ import upm.cmsc.starwars.states.InstructState;
 import upm.cmsc.starwars.states.MenuState;
 import upm.cmsc.starwars.states.SecondLevelState;
 import upm.cmsc.starwars.states.StoryBoardState;
+import upm.cmsc.starwars.states.ThirdLevelState;
 
 public class Engine extends StateBasedGame {
 
@@ -34,6 +35,7 @@ public class Engine extends StateBasedGame {
 		this.addState(new CreditsState());
 		this.addState(new FirstLevelState());
 		this.addState(new SecondLevelState());
+		this.addState(new ThirdLevelState());
 		this.addState(new GameOverState());
 	}
 
