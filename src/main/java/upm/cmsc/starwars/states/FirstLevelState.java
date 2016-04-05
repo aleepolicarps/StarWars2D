@@ -4,6 +4,7 @@ import static upm.cmsc.starwars.entities.Action.ATTACK;
 import static upm.cmsc.starwars.entities.Action.JUMP;
 import static upm.cmsc.starwars.entities.Action.STILL;
 import static upm.cmsc.starwars.entities.Action.WALK;
+import static upm.cmsc.starwars.entities.Action.TOATTACK;
 import static upm.cmsc.starwars.entities.LukeSkywalker.ATTACK_DURATION;
 import static upm.cmsc.starwars.entities.LukeSkywalker.H_DISPLACEMENT_BACKWARD;
 import static upm.cmsc.starwars.entities.LukeSkywalker.H_DISPLACEMENT_FORWARD;
@@ -291,7 +292,8 @@ public class FirstLevelState extends BasicGameState{
 		luke.setY(LUKE_MIN_Y);
 		
 		general = new GeneralGrievous();
-		general.setY(LUKE_MIN_Y - 8);
+		general.setY(LUKE_MIN_Y - 35);
+		System.out.println("Luke: " + luke.getY() + " - General: " + general.getY());
 		BattleDroid laBattleDroid = droids.get(droids.size()-1);
 		general.setX(laBattleDroid.getX() + Window.WIDTH);
 		
@@ -348,7 +350,7 @@ public class FirstLevelState extends BasicGameState{
 			}
 		}
 		long timeDiff = System.currentTimeMillis() - general.getTimeLastAttack();
-		if(general.getX()-luke.getX()<=MIN_DIST_FROM_DISTANCE){
+		/*if(general.getX()-luke.getX()<=MIN_DIST_FROM_DISTANCE){
 			if(timeDiff >= GeneralGrievous.ATTACK_INTERVAL){
 				general.attack(luke);
 			}
@@ -358,6 +360,14 @@ public class FirstLevelState extends BasicGameState{
 		}
 		else if(timeDiff >= 600){
 			general.setAnimation(Action.STILL);
+		}*/
+		if(timeDiff >= GeneralGrievous.ATTACK_INTERVAL){
+			general.attack(luke);
+		}
+		else if(timeDiff >= 1000){
+			general.setAnimation(TOATTACK);
+		}else if(timeDiff >= 600){
+			general.setAnimation(STILL);
 		}
 	}
 	

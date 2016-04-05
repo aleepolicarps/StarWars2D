@@ -107,6 +107,9 @@ public class LukeSkywalker {
 		case DEAD:
 			animation = dead;
 			break;
+		case TOATTACK:
+			animation = still;
+			break;
 		default:
 			animation = still;
 			break;

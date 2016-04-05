@@ -1,6 +1,7 @@
 package upm.cmsc.starwars.entities;
 
 import static org.apache.commons.io.FilenameUtils.removeExtension;
+import static upm.cmsc.starwars.entities.LukeSkywalker.MIN_DIST_FROM_DISTANCE;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +23,7 @@ import upm.cmsc.starwars.CustomFileUtil;
 public class GeneralGrievous {
 	
 	public static final int MAX_HEALTH = 200;
-	public static final int DAMAGE = 10;
+	public static final int DAMAGE = 15;
 	public static final int ATTACK_INTERVAL = 2000;
 	
 	private static Map<String,Image> images;
@@ -30,7 +31,7 @@ public class GeneralGrievous {
 	private float y = 0;
 	private int currHealth = MAX_HEALTH;
 	private Animation animation;
-	private Animation still, walk, attack, dead;
+	private Animation still, walk, attack, attack2, dead, toattack;
 	private long timeLastAttack;
 	private boolean attacking;
 	
@@ -69,14 +70,22 @@ public class GeneralGrievous {
 		still = new Animation(imgSequence2,duration2,false);
 		
 		Image[] imgSequence3 = {images.get("attack1"),images.get("attack2"),images.get("attack3"),
-				images.get("attack4"),images.get("attack5"),images.get("attack6")};
-		int[] duration3 = {50,50,50,50,50,50};
+				images.get("attack4")};
+		int[] duration3 = {50,50,50,50};
 		attack = new Animation(imgSequence3,duration3,false);
+		
+		Image[] imgSequence4 = {images.get("attack5"),images.get("attack6")};
+		int[] duration4 = {50,50};
+		
+		attack2 = new Animation(imgSequence4,duration4,false);
 		
 		Image[] imgSequence5 = {images.get("dead")};
 		int[] duration5 = {200};
 		dead = new Animation(imgSequence5,duration5,false);
 		
+		Image[] imgSequence6 = {images.get("stand"),images.get("toattack"),images.get("stand"),images.get("toattack"),images.get("stand"),images.get("toattack")};
+		int[] duration6 = {50,50,50,50,50,50};
+		toattack = new Animation(imgSequence6,duration6,false);
 	}
 	
 	
@@ -96,6 +105,9 @@ public class GeneralGrievous {
 			break;
 		case DEAD:
 			animation = dead;
+			break;
+		case TOATTACK:
+			animation = toattack;
 			break;
 		default:
 			animation = still;
@@ -157,8 +169,15 @@ public class GeneralGrievous {
 
 	public void attack(LukeSkywalker luke){
 		timeLastAttack = System.currentTimeMillis();
-		animation = attack;
-		luke.decreaseHealth(DAMAGE);
+		if(currHealth<GeneralGrievous.MAX_HEALTH * 0.25){
+			animation = attack2;
+			if(this.getX()-luke.getX()<=MIN_DIST_FROM_DISTANCE)
+				luke.decreaseHealth(DAMAGE*5);
+		}else{
+			animation = attack;
+			if(this.getX()-luke.getX()<=MIN_DIST_FROM_DISTANCE)
+				luke.decreaseHealth(DAMAGE);
+		}
 		attacking = true;
 	}
 	public boolean isAttacking(){
