@@ -26,7 +26,6 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import upm.cmsc.starwars.CustomFileUtil;
 import upm.cmsc.starwars.Window;
-import upm.cmsc.starwars.entities.Action;
 import upm.cmsc.starwars.entities.BattleDroid;
 import upm.cmsc.starwars.entities.GeneralGrievous;
 import upm.cmsc.starwars.entities.Laser;
@@ -139,6 +138,7 @@ public class FirstLevelState extends BasicGameState{
 								g.drawString("you'd like to meet.", 150, 100);
 								break;
 						case 3: preboss = false;
+								postboss = true;
 								break;
 					}
 				}
@@ -283,7 +283,6 @@ public class FirstLevelState extends BasicGameState{
 		}
 		if(droids.isEmpty()&&!postboss){
 			preboss = true;
-			postboss = true;
 		}
 	}
 
@@ -293,7 +292,6 @@ public class FirstLevelState extends BasicGameState{
 		
 		general = new GeneralGrievous();
 		general.setY(LUKE_MIN_Y - 35);
-		System.out.println("Luke: " + luke.getY() + " - General: " + general.getY());
 		BattleDroid laBattleDroid = droids.get(droids.size()-1);
 		general.setX(laBattleDroid.getX() + Window.WIDTH);
 		
@@ -350,17 +348,7 @@ public class FirstLevelState extends BasicGameState{
 			}
 		}
 		long timeDiff = System.currentTimeMillis() - general.getTimeLastAttack();
-		/*if(general.getX()-luke.getX()<=MIN_DIST_FROM_DISTANCE){
-			if(timeDiff >= GeneralGrievous.ATTACK_INTERVAL){
-				general.attack(luke);
-			}
-			else if(timeDiff >= 600){
-				general.setAnimation(STILL);
-			}
-		}
-		else if(timeDiff >= 600){
-			general.setAnimation(Action.STILL);
-		}*/
+
 		if(timeDiff >= GeneralGrievous.ATTACK_INTERVAL){
 			general.attack(luke);
 		}
