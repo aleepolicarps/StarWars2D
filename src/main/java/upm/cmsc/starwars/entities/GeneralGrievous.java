@@ -76,6 +76,7 @@ public class GeneralGrievous {
 		
 		Image[] imgSequence4 = {images.get("attack5"),images.get("attack6")};
 		int[] duration4 = {50,50};
+		
 		attack2 = new Animation(imgSequence4,duration4,false);
 		
 		Image[] imgSequence5 = {images.get("dead")};

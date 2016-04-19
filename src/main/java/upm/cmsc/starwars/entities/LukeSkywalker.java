@@ -31,14 +31,13 @@ public class LukeSkywalker {
 	public static final float INIT_H_VELOCITY = 50f;
 	public static final int MIN_DIST_FROM_DISTANCE= 30;
 	
-	private int damage = 10;
+	private int damage = 10;	
 	private static Map<String,Image> images;
 	private float x = 0;
 	private float y = 0;
 	private int currHealth = MAX_HEALTH;
 	private Animation animation;
 	private Animation still, walk, jump, attack, dead;
-	private Animation still_rifle, walk_rifle, jump_rifle, attack_rifle, dead_rifle;
 	
 	public LukeSkywalker() throws SlickException{
 		loadSprites();
@@ -85,25 +84,6 @@ public class LukeSkywalker {
 		int[] duration5 = {200};
 		dead = new Animation(imgSequence5,duration5,false);
 		
-		Image[] imgSequence6 = {images.get("attack1_rifle"),images.get("attack2_rifle"),images.get("attack3_rifle")};
-		int[] duration6 = {50,50,70};
-		attack_rifle = new Animation(imgSequence6,duration6,false);
-		
-		Image[] imgSequence7 = {images.get("stand_rifle")};
-		int[] duration7 = {200};
-		still_rifle = new Animation(imgSequence7,duration7,false);
-		
-		Image[] imgSequence8 = {images.get("walk1_rifle"),images.get("walk2_rifle")};
-		int[] duration8 = {100,100};
-		walk_rifle = new Animation(imgSequence8,duration8,false);
-		
-		Image[] imgSequence9 = {images.get("jump_rifle")};
-		int[] duration9 = {200};
-		jump_rifle = new Animation(imgSequence9,duration9,false);
-		
-		Image[] imgSequence10 = {images.get("dead_rifle")};
-		int[] duration10 = {200};
-		dead_rifle = new Animation(imgSequence10,duration10,false);
 	}
 	
 	
@@ -126,6 +106,9 @@ public class LukeSkywalker {
 			break;
 		case DEAD:
 			animation = dead;
+			break;
+		case TOATTACK:
+			animation = still;
 			break;
 		default:
 			animation = still;
