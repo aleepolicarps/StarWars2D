@@ -58,7 +58,7 @@ public class MenuState extends BasicGameState{
 		//start
 		if((posX>310 && posX<460)&& (posY>320 && posY<350)){
 			if(Mouse.isButtonDown(Input.MOUSE_LEFT_BUTTON)){
-				s.enterState(State.FIRST_LEVEL, new FadeOutTransition(), new FadeInTransition());
+				s.enterState(State.SECOND_LEVEL, new FadeOutTransition(), new FadeInTransition());
 			}
 		}
 				

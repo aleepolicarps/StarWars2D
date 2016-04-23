@@ -48,6 +48,12 @@ public class SecondLevelState extends BasicGameState{
 	
 	private Image background,avatar_grievous,avatar_luke;
 	private boolean attacking,jumping,paused,preboss=false,inplace=false,postboss=false,assemble=false;
+	
+	//trial gun
+	private boolean pickgun, alreadyPickedGun;
+	private float lastTrooperX = 0;
+	private int pickCounter = 0;
+	
 	private float hVelocity;
 	private long timeStarted;
 	private long timeLastBulletFired;
@@ -60,6 +66,7 @@ public class SecondLevelState extends BasicGameState{
 	private Droideka droideka;
 	private List<StormTrooper> troopers = new ArrayList<StormTrooper>();
 	private List<Laser> lasers = new ArrayList<Laser>();
+	private List<Laser> laserLuke = new ArrayList<Laser>();
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
@@ -101,7 +108,34 @@ public class SecondLevelState extends BasicGameState{
 		for(Laser laser:lasers){
 			laser.getImage().draw(laser.getX(), laser.getY());
 		}
-		if(troopers.isEmpty()){
+		for(Laser laser:laserLuke){
+			laser.getImage().draw(laser.getX(), laser.getY());
+		}
+		
+		if(pickgun){
+			g.setColor(Color.white);
+			g.fillRect(40, 30, 700, 120);
+			g.setColor(Color.black);
+			g.fillRect(50, 40, 680, 100);
+			switch(pickCounter){
+			case 0: g.setColor(Color.white);
+					g.drawString("You picked up a laser rifle!", 55, 45);
+					g.drawString("Press S to continue.", 55, 100);
+					luke.setRifleLuke(true);
+					break;
+			case 1: g.drawImage(avatar_luke, 60, 50);
+					g.setColor(Color.blue);
+					g.drawString("Luke Skywalker", 150, 50);
+					g.setColor(Color.white);
+					g.drawString("This might be useful.", 150, 80);
+					break;
+			case 2: pickgun = false;
+					alreadyPickedGun = true;
+					break;
+			}
+		}
+		
+		if(troopers.isEmpty()){			
 			if(preboss){
 				g.setColor(Color.white);
 				g.fillRect(40, 30, 700, 120);
@@ -156,6 +190,10 @@ public class SecondLevelState extends BasicGameState{
 	@Override
 	public void update(GameContainer gc, StateBasedGame s, int delta) throws SlickException {
 		
+		if(luke.getX()>=lastTrooperX&&!alreadyPickedGun){
+			pickgun = true;
+		}
+		
 		if(preboss&&droideka.getX()>=Window.WIDTH-200){
 			droideka.addToX(-H_DISPLACEMENT_FORWARD*5);
 			droideka.getAnimation().update(delta);
@@ -174,15 +212,19 @@ public class SecondLevelState extends BasicGameState{
 			gc.setPaused(paused);
 		}
 		
-		if(gc.getInput().isKeyPressed(Input.KEY_S)&&preboss){
-			talkCounter++;
+		if(gc.getInput().isKeyPressed(Input.KEY_S)&&(preboss||pickgun)){
+			if(pickgun){
+				pickCounter++;
+			}else if(preboss){	
+				talkCounter++;
+			}
 		}
 				
 		if(paused){
 			return;
 		}
 		
-		if(gc.getInput().isKeyDown(Input.KEY_RIGHT) && !jumping && !isLukeColliding() && !preboss){
+		if(gc.getInput().isKeyDown(Input.KEY_RIGHT) && !jumping && !isLukeColliding() && !preboss && !pickgun){
 			luke.setAnimation(WALK);
 			if(luke.getX()<MAX_X){
 				luke.addToX(delta*H_DISPLACEMENT_FORWARD);
@@ -200,7 +242,7 @@ public class SecondLevelState extends BasicGameState{
 			
 			
 		}
-		else if(gc.getInput().isKeyDown(Input.KEY_LEFT) && !jumping && !preboss){
+		else if(gc.getInput().isKeyDown(Input.KEY_LEFT) && !jumping && !preboss  && !pickgun){
 			luke.setAnimation(WALK);
 			if(luke.getX()<=MAX_X){
 				luke.addToX(-1*delta*H_DISPLACEMENT_BACKWARD);
@@ -210,12 +252,11 @@ public class SecondLevelState extends BasicGameState{
 				}
 			}
 		}
-		else if(gc.getInput().isKeyPressed(Input.KEY_A) && !attacking && !jumping && !preboss){
+		else if(gc.getInput().isKeyPressed(Input.KEY_A) && !attacking && !jumping && !preboss  && !pickgun){
 				luke.setAnimation(ATTACK);
 				attacking = true;
 				timeStarted = System.currentTimeMillis();
 				attack();	
-				
 		}
 		else if(attacking){
 			long timeCurr = System.currentTimeMillis();
@@ -223,7 +264,7 @@ public class SecondLevelState extends BasicGameState{
 				attacking = false;
 			}
 		}
-		else if(gc.getInput().isKeyPressed(Input.KEY_UP) && !jumping && !preboss){
+		else if(gc.getInput().isKeyPressed(Input.KEY_UP) && !jumping && !preboss  && !pickgun){
 			luke.setAnimation(JUMP);
 			jumping = true;
 			timeStarted = System.currentTimeMillis();
@@ -248,7 +289,6 @@ public class SecondLevelState extends BasicGameState{
 			luke.setAnimation(STILL);
 		}
 		
-		
 		for(StormTrooper trooper:troopers){
 			if(!trooper.isDead()){
 				trooper.getAnimation().update(delta);
@@ -256,6 +296,9 @@ public class SecondLevelState extends BasicGameState{
 		}
 		
 		for(Laser laser: lasers){
+			laser.updateXPosition(delta);
+		}
+		for(Laser laser: laserLuke){
 			laser.updateXPosition(delta);
 		}
 		checkIfAttacked();
@@ -310,6 +353,7 @@ public class SecondLevelState extends BasicGameState{
 		
 		if(troopers.isEmpty()&&!postboss){
 			preboss = true;
+			pickgun = true;
 		}
 	}
 	
@@ -342,6 +386,9 @@ public class SecondLevelState extends BasicGameState{
 		for(int i=0;i<troopers.size();i++){
 			StormTrooper trooper = troopers.get(i);
 			float trooperRight = trooper.getX() + trooper.getAnimation().getWidth();
+			if (troopers.size() == 1){
+				lastTrooperX = trooper.getX() - 20;
+			}
 			if(trooper.isDead() && trooperRight<= 0 ){
 				troopers.remove(i);
 				i--;
@@ -371,20 +418,43 @@ public class SecondLevelState extends BasicGameState{
 				return;
 			}
 		}
+		int laserLukeCount = 0;
+		while(laserLuke.size()>laserLukeCount){
+			float droidekaLeft = ((float)droideka.getAnimation().getWidth()/2) + droideka.getX();
+			System.out.println(droidekaLeft + " " + droideka.getX() + " " + laserLuke.get(laserLukeCount).getX());
+			if(laserLuke.get(laserLukeCount).getX() <= droidekaLeft && laserLuke.get(laserLukeCount).getX()>=droideka.getX()){
+				if(!droideka.isShielding()){
+					droideka.decreaseHealth(luke.getDamage());
+				}
+				laserLuke.remove(laserLuke.get(laserLukeCount));
+			}else if(laserLuke.get(laserLukeCount).getX()>=Window.WIDTH){
+				laserLuke.remove(laserLuke.get(laserLukeCount));
+			}
+			laserLukeCount++;
+		}
 	}
 	
 	private void attack(){
-		for(StormTrooper trooper: troopers){
-			if(!trooper.isDead() && trooper.getX() - luke.getX() <= MIN_DIST_FROM_DISTANCE + 20
-					&& !trooper.isDying() && !jumping){
-				trooper.setDead(true);
-				return;
+		if(alreadyPickedGun){
+			try {
+				laserLuke.add(new Laser(luke.getX()+10, LASER_Y, 1));
+			} catch (SlickException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else{
+			for(StormTrooper trooper: troopers){
+				if(!trooper.isDead() && trooper.getX() - luke.getX() <= MIN_DIST_FROM_DISTANCE + 20
+						&& !trooper.isDying() && !jumping){
+					trooper.setDead(true);
+					return;
+				}
 			}
 		}
-		if(droideka.getX()-luke.getX()<=MIN_DIST_FROM_DISTANCE){
+		/*if(droideka.getX()-luke.getX()<=MIN_DIST_FROM_DISTANCE){
 			if(!droideka.isShielding())
 				droideka.decreaseHealth(luke.getDamage());
-		}
+		}*/
 	}
 
 	@Override

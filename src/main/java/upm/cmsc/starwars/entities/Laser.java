@@ -15,15 +15,23 @@ public class Laser {
 	 private float x;
 	 private float y;
 	 private Image image;
+	 private int charType;
 	 
 	 public Laser() throws SlickException{
-		 loadImage();
+		 loadImage(0);
 	 }
 	 
 	 public Laser(float x, float y) throws SlickException{
 		 this.x = x;
 		 this.y = y;
-		 loadImage();
+		 loadImage(0);
+	 }
+	 
+	 public Laser(float x, float y, int charType) throws SlickException{
+		 this.x = x;
+		 this.y = y;
+		 this.charType = charType;
+		 loadImage(charType);
 	 }
 	 
 	 public float getX(){
@@ -42,11 +50,19 @@ public class Laser {
 		 return image;
 	 }
 	 public void updateXPosition(int delta){
-		 x -= delta * VELOCITY;
+		 if(charType==0){
+			 x -= delta * VELOCITY;
+		 }else if(charType==1){
+			 x += delta * VELOCITY;
+		 }
 	 }
 	 
-	 private void loadImage() throws SlickException{
-		 image = new Image(CustomFileUtil.getFilePath("/elements/laser2.png"));
+	 private void loadImage(int charType) throws SlickException{
+		 if(charType==0){
+			 image = new Image(CustomFileUtil.getFilePath("/elements/laser2.png")); 
+		 }else if(charType==1){
+			 image = new Image(CustomFileUtil.getFilePath("/elements/laser.png"));
+		 }
 	 }
  
 }

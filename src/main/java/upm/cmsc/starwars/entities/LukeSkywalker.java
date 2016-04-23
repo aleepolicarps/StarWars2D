@@ -40,6 +40,8 @@ public class LukeSkywalker {
 	private Animation still, walk, jump, attack, dead;
 	private Animation still_rifle, walk_rifle, jump_rifle, attack_rifle, dead_rifle;
 	
+	private boolean rifleLuke = false;
+	
 	public LukeSkywalker() throws SlickException{
 		loadSprites();
 		loadAnimations();
@@ -113,22 +115,40 @@ public class LukeSkywalker {
 	public void setAnimation(Action action){
 		switch (action) {
 		case STILL:
-			animation = still;
+			if(!rifleLuke)
+				animation = still;
+			else
+				animation = still_rifle;
 			break;
 		case WALK:
-			animation = walk;
+			if(!rifleLuke)
+				animation = walk;
+			else
+				animation = walk_rifle;
 			break;
 		case ATTACK:
-			animation = attack;
+			if(!rifleLuke)
+				animation = attack;
+			else
+				animation = attack_rifle;
 			break;
 		case JUMP:
-			animation = jump;
+			if(!rifleLuke)
+				animation = jump;
+			else
+				animation = jump_rifle;
 			break;
 		case DEAD:
-			animation = dead;
+			if(!rifleLuke)
+				animation = dead;
+			else
+				animation = dead_rifle;
 			break;
 		default:
-			animation = still;
+			if(!rifleLuke)
+				animation = still;
+			else
+				animation = still_rifle;
 			break;
 		}
 	}
@@ -187,6 +207,14 @@ public class LukeSkywalker {
 
 	public void setDamage(int damage) {
 		this.damage = damage;
+	}
+	
+	public boolean getRifleLuke(){
+		return rifleLuke;
+	}
+	
+	public void setRifleLuke(boolean rifleLuke){
+		this.rifleLuke = rifleLuke;
 	}
 
 }
