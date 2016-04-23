@@ -40,13 +40,13 @@ public class SecondLevelState extends BasicGameState{
 	
 	private final float LUKE_MIN_Y = 340;
 	private final float TROOPER_Y = 350;
-	private final float LASER_Y = 350;
+	private final float LASER_Y = 355;
 	private final float MAX_X = 400;
 	private final float MIN_X = 0;
 	private final int TROOPER_COUNT = 1;
 	private final long LASER_INTERVAL = 3000;
 	
-	private Image background,avatar_grievous,avatar_luke;
+	private Image background,avatar_droideka,avatar_luke;
 	private boolean attacking,jumping,paused,preboss=false,inplace=false,postboss=false,assemble=false;
 	
 	//trial gun
@@ -152,7 +152,7 @@ public class SecondLevelState extends BasicGameState{
 						case 0: g.setColor(Color.white);
 								g.drawString("Press S to continue.", 55, 45);
 								break;
-						case 1: g.drawImage(avatar_grievous, 640, 50);
+						case 1: g.drawImage(avatar_droideka, 640, 50);
 								g.setColor(Color.red);
 								g.drawString("Droideka", 60, 50);
 								g.setColor(Color.white);
@@ -327,7 +327,7 @@ public class SecondLevelState extends BasicGameState{
 			}
 			if(timeDiff >= Droideka.ATTACK_INTERVAL){
 				if(randChoice == 0){
-					lasers.add(new Laser(droideka.getX()-10, LASER_Y));
+					lasers.add(new Laser(droideka.getX()-10, LASER_Y+15));
 					droideka.attack();
 				}else{
 					droideka.shield();
@@ -370,7 +370,7 @@ public class SecondLevelState extends BasicGameState{
 	
 	private void loadImages() throws SlickException{
 		background = new Image(CustomFileUtil.getFilePath("/background/spaceship_interior.png"));
-		avatar_grievous = new Image(CustomFileUtil.getFilePath("/avatars/avatar_grievous.png"));
+		avatar_droideka = new Image(CustomFileUtil.getFilePath("/avatars/avatar_droideka.png"));
 		avatar_luke = new Image(CustomFileUtil.getFilePath("/avatars/avatar_luke.png"));
 	}
 	
@@ -437,7 +437,7 @@ public class SecondLevelState extends BasicGameState{
 	private void attack(){
 		if(alreadyPickedGun){
 			try {
-				laserLuke.add(new Laser(luke.getX()+10, LASER_Y, 1));
+				laserLuke.add(new Laser(luke.getX()+30, LASER_Y+10, 1));
 			} catch (SlickException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
