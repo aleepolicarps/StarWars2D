@@ -1,15 +1,14 @@
 package upm.cmsc.starwars.states;
 
 import static upm.cmsc.starwars.entities.Action.ATTACK;
-import static upm.cmsc.starwars.entities.Action.JUMP;
 import static upm.cmsc.starwars.entities.Action.STILL;
 import static upm.cmsc.starwars.entities.Action.WALK;
-import static upm.cmsc.starwars.entities.LukeSkywalker.ATTACK_DURATION;
-import static upm.cmsc.starwars.entities.LukeSkywalker.H_DISPLACEMENT_BACKWARD;
-import static upm.cmsc.starwars.entities.LukeSkywalker.H_DISPLACEMENT_FORWARD;
-import static upm.cmsc.starwars.entities.LukeSkywalker.INIT_H_VELOCITY;
-import static upm.cmsc.starwars.entities.LukeSkywalker.JUMP_DURATION;
-import static upm.cmsc.starwars.entities.LukeSkywalker.MIN_DIST_FROM_DISTANCE;
+import static upm.cmsc.starwars.entities.XWingStarfighter.ATTACK_DURATION;
+import static upm.cmsc.starwars.entities.XWingStarfighter.H_DISPLACEMENT_FORWARD;
+import static upm.cmsc.starwars.entities.XWingStarfighter.H_DISPLACEMENT_UPWARD;
+import static upm.cmsc.starwars.entities.XWingStarfighter.H_DISPLACEMENT_DOWNWARD;
+import static upm.cmsc.starwars.entities.XWingStarfighter.MIN_DIST_FROM_DISTANCE_X;
+import static upm.cmsc.starwars.entities.XWingStarfighter.MIN_DIST_FROM_DISTANCE_Y;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,30 +26,28 @@ import upm.cmsc.starwars.CustomFileUtil;
 import upm.cmsc.starwars.Window;
 import upm.cmsc.starwars.entities.Action;
 import upm.cmsc.starwars.entities.GeneralGrievous;
+import upm.cmsc.starwars.entities.ImperialTIEFighter;
 import upm.cmsc.starwars.entities.Laser;
-import upm.cmsc.starwars.entities.LukeSkywalker;
-import upm.cmsc.starwars.entities.StormTrooper;
+import upm.cmsc.starwars.entities.XWingStarfighter;
 
 public class ThirdLevelState extends BasicGameState{
 	
 	private final float LUKE_MIN_Y = 335;
-	private final float TROOPER_Y = 350;
-	private final float LASER_Y = 350;
-	private final float MAX_X = 400;
-	private final float MIN_X = 0;
+	private final float MAX_X = 250;
+	private final float MAX_Y = 550;
+	private final float MIN_Y = 100;
 	private final int TROOPER_COUNT = 5;
-	private final long LASER_INTERVAL = 3000;
+	private final long LASER_INTERVAL = 500;
 	
 	private Image background;
 	private boolean attacking,jumping,paused;
-	private float hVelocity;
 	private long timeStarted;
 	private long timeLastBulletFired;
 	private float bgX = 0;
 	
-	private LukeSkywalker luke;
+	private XWingStarfighter xwing;
 	private GeneralGrievous general;
-	private List<StormTrooper> troopers = new ArrayList<StormTrooper>();
+	private List<ImperialTIEFighter> fighters = new ArrayList<ImperialTIEFighter>();
 	private List<Laser> lasers = new ArrayList<Laser>();
 	
 	@Override
@@ -74,26 +71,26 @@ public class ThirdLevelState extends BasicGameState{
 			background.draw(x, 0);
 			x+=800;
 		}
-		g.setColor(Color.black);
+		g.setColor(Color.white);
 		g.drawString("Luke Skywalker", 30, 10);
-		g.setColor(Color.black);
-		g.fillRect(40, 30, LukeSkywalker.MAX_HEALTH, 20);
-		g.setColor(luke.getCurrentHealthColor());
-		g.fillRect(40, 30, luke.getCurrHealth(), 20);
+		g.setColor(Color.white);
+		g.fillRect(40, 30, XWingStarfighter.MAX_HEALTH, 20);
+		g.setColor(xwing.getCurrentHealthColor());
+		g.fillRect(40, 30, xwing.getCurrHealth(), 20);
 		
-		for(StormTrooper trooper:troopers){
-			trooper.getAnimation().draw(trooper.getX(), trooper.getY());
+		for(ImperialTIEFighter fighter:fighters){
+			fighter.getAnimation().draw(fighter.getX(), fighter.getY());
 		}
 		
-		luke.getAnimation().draw(luke.getX(),luke.getY());
+		xwing.getAnimation().draw(xwing.getX(),xwing.getY());
 		
 		for(Laser laser:lasers){
 			laser.getImage().draw(laser.getX(), laser.getY());
 		}
-		if(troopers.isEmpty()){
+		if(fighters.isEmpty()){
 			general.getAnimation().draw(general.getX(),general.getY());
 			g.setColor(Color.black);
-			g.drawString("General Grievous", 620, 10);
+			g.drawString("Death Star", 620, 10);
 			g.setColor(Color.black);
 			g.fillRect(560, 30, GeneralGrievous.MAX_HEALTH, 20);
 			g.setColor(general.getCurrentHealthColor());
@@ -101,13 +98,27 @@ public class ThirdLevelState extends BasicGameState{
 		}
 		
 		if(paused){
-			g.setColor(Color.black);
+			g.setColor(Color.white);
 			g.drawString("PAUSED", 370, 200);
 		}
 	}
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame s, int delta) throws SlickException {
+		
+		if(xwing.getX()<MAX_X){
+			xwing.addToX(delta*H_DISPLACEMENT_FORWARD);
+			if(xwing.getX()>MAX_X){
+				xwing.setX(MAX_X);
+			}
+		}
+		else{
+			bgX -= delta * 0.2f;
+			general.addToX(-1*delta*H_DISPLACEMENT_FORWARD);
+			for(ImperialTIEFighter fighter: fighters){
+				fighter.addToX(-1*delta*H_DISPLACEMENT_FORWARD);
+			}
+		}
 		
 		if(gc.getInput().isKeyPressed(Input.KEY_SPACE)){
 			paused = !paused;
@@ -118,76 +129,56 @@ public class ThirdLevelState extends BasicGameState{
 			return;
 		}
 		
-		if(gc.getInput().isKeyDown(Input.KEY_RIGHT) && !jumping && !isLukeColliding()){
-			luke.setAnimation(WALK);
-			if(luke.getX()<MAX_X){
-				luke.addToX(delta*H_DISPLACEMENT_FORWARD);
-				if(luke.getX()>MAX_X){
-					luke.setX(MAX_X);
-				}
-			}
-			else{
-				bgX -= delta * 0.2f;
-				general.addToX(-1*delta*H_DISPLACEMENT_FORWARD);
-				for(StormTrooper trooper: troopers){
-					trooper.addToX(-1*delta*H_DISPLACEMENT_FORWARD);
-				}
-			}
-			
-			
-		}
-		else if(gc.getInput().isKeyDown(Input.KEY_LEFT) && !jumping){
-			luke.setAnimation(WALK);
-			if(luke.getX()<=MAX_X){
-				luke.addToX(-1*delta*H_DISPLACEMENT_BACKWARD);
-				if(luke.getX()<MIN_X){
-					luke.setX(MIN_X);
-					luke.setAnimation(STILL);
-				}
-			}
-		}
-		else if(gc.getInput().isKeyPressed(Input.KEY_A) && !attacking && !jumping){
-				luke.setAnimation(ATTACK);
+		else if(gc.getInput().isKeyDown(Input.KEY_A) && !attacking){
+				xwing.setAnimation(ATTACK);
 				attacking = true;
 				timeStarted = System.currentTimeMillis();
 				attack();	
-				
 		}
 		else if(attacking){
 			long timeCurr = System.currentTimeMillis();
 			if(timeCurr-timeStarted>ATTACK_DURATION){
 				attacking = false;
+				xwing.setAnimation(WALK);
 			}
 		}
-		else if(gc.getInput().isKeyPressed(Input.KEY_UP) && !jumping){
-			luke.setAnimation(JUMP);
-			jumping = true;
-			timeStarted = System.currentTimeMillis();
-			hVelocity = INIT_H_VELOCITY;
-		}
-		else if(jumping){
-			long timeCurr = System.currentTimeMillis();
-			if((timeCurr-timeStarted<JUMP_DURATION)&&hVelocity>0){
-				luke.addToY(hVelocity*-1);
-				hVelocity -= 5;
-			}
-			else if(timeCurr-timeStarted>JUMP_DURATION){
-				hVelocity += 5;
-				luke.addToY(hVelocity);
-				if(hVelocity >= INIT_H_VELOCITY){
-					jumping=false;
-					luke.setY(LUKE_MIN_Y);
+		else if(gc.getInput().isKeyDown(Input.KEY_DOWN) && !isXWingColliding()){
+			xwing.setAnimation(WALK);
+			if(xwing.getY()<MAX_Y){
+				xwing.addToY(delta*H_DISPLACEMENT_DOWNWARD);
+				if(xwing.getY()>MAX_Y){
+					xwing.setY(MAX_Y);
 				}
 			}
 		}
-		else{
-			luke.setAnimation(STILL);
+		else if(gc.getInput().isKeyDown(Input.KEY_UP) && !isXWingColliding()){
+			xwing.setAnimation(WALK);
+			if(xwing.getY()<=MAX_Y){
+				xwing.addToY(-1*delta*H_DISPLACEMENT_UPWARD);
+				if(xwing.getY()<MIN_Y){
+					xwing.setY(MIN_Y);
+				}
+			}
 		}
 		
-		
-		for(StormTrooper trooper:troopers){
-			if(!trooper.isDead()){
-				trooper.getAnimation().update(delta);
+		if(isXWingColliding()){
+			xwing.decreaseHealth(xwing.getCurrHealth());
+		}
+			
+		for(ImperialTIEFighter fighter:fighters){
+			if(!fighter.isDead()){
+				if(fighter.getY()<=MIN_Y){
+					fighter.setGoingDown(true);
+				}else if(fighter.getY()>=MAX_Y){
+					fighter.setGoingDown(false);
+				}
+				if(fighter.isGoingDown()){
+					fighter.addToY(delta*H_DISPLACEMENT_DOWNWARD);
+				}
+				else{
+					fighter.addToY(-1*delta*H_DISPLACEMENT_UPWARD);
+				}
+				fighter.getAnimation().update(delta);				
 			}
 		}
 		
@@ -197,36 +188,34 @@ public class ThirdLevelState extends BasicGameState{
 		checkIfAttacked();
 		
 		general.getAnimation().update(delta);
-		luke.getAnimation().update(delta);
+		xwing.getAnimation().update(delta);
 		
-		
-		for(StormTrooper trooper:troopers){
+		for(ImperialTIEFighter fighter:fighters){
 			long currTime = System.currentTimeMillis();
 			if(currTime - timeLastBulletFired > LASER_INTERVAL){
-				if(trooper.getX()<=Window.WIDTH && trooper.getX()>= 0 && !trooper.isDead() 
-						&& !trooper.isDying()){
-					lasers.add(new Laser(trooper.getX()-10, LASER_Y));
+				if(fighter.getX()<=Window.WIDTH && fighter.getX()>= 0 && !fighter.isDead() 
+						&& !fighter.isDying()){
+					lasers.add(new Laser(fighter.getX()+10, fighter.getY()+50));
 					timeLastBulletFired = System.currentTimeMillis();
 				}
 			}
 		}
 		if(general.isDead()){
-			s.enterState(State.SECOND_LEVEL); // TODO change this according to which level is next
+			s.enterState(State.THIRD_LEVEL); // TODO change this according to which level is next
 		}
-		if(luke.isDead()){
+		if(xwing.isDead()){
 			s.enterState(State.GAMEOVER);
 		}
 	}
 	
 	private void initializeCharacters() throws SlickException{
-		luke = new LukeSkywalker();
-		luke.setY(LUKE_MIN_Y);
+		xwing = new XWingStarfighter();
+		xwing.setY(LUKE_MIN_Y);
 		
 		general = new GeneralGrievous();
 		general.setY(LUKE_MIN_Y - 8);
-		StormTrooper laStormTrooper = troopers.get(troopers.size()-1);
-		general.setX(laStormTrooper.getX() + Window.WIDTH);
-		
+		ImperialTIEFighter laStormTrooper = fighters.get(fighters.size()-1);
+		general.setX(laStormTrooper.getX() + Window.WIDTH);		
 	}
 	
 	private void loadImages() throws SlickException{
@@ -234,50 +223,76 @@ public class ThirdLevelState extends BasicGameState{
 	}
 	
 	private void loadEnemyUnits() throws SlickException{
-		float x = 0;
+		float x = 0, y = 0; 
 		for(int i=0;i<TROOPER_COUNT;i++){
 			x+=500+Math.random()*1000;
-			troopers.add(new StormTrooper(x,TROOPER_Y));
+			y+=100+Math.random();
+			if(y > MAX_Y || y < MIN_Y){
+				y+=100+Math.random();
+			}
+			fighters.add(new ImperialTIEFighter(x,y));
 		} 
 	}
 		
 	private void removeDeadEnemyUnits(){
-		for(int i=0;i<troopers.size();i++){
-			StormTrooper trooper = troopers.get(i);
-			float trooperRight = trooper.getX() + trooper.getAnimation().getWidth();
-			if(trooper.isDead() && trooperRight<= 0 ){
-				troopers.remove(i);
+		for(int i=0;i<fighters.size();i++){
+			ImperialTIEFighter fighter = fighters.get(i);
+			float fighterRight = fighter.getX() + fighter.getAnimation().getWidth();
+			if(fighter.isDead() && fighterRight<= 0 ){
+				fighters.remove(i);
 				i--;
 			}
 		}
 	}
 	
-	private boolean isLukeColliding(){
-		for(StormTrooper st:troopers){
-			if(!st.isDead() && st.getX()-luke.getX()<=MIN_DIST_FROM_DISTANCE){
+	private boolean isXWingColliding(){
+		float xwingRight = (float) xwing.getX() + (xwing.getAnimation().getWidth()/2);
+		float xwingDown = (float) xwing.getY() + (xwing.getAnimation().getHeight()/2);
+		float xwingUp = (float) xwing.getY() - (xwing.getAnimation().getHeight()/2);
+	
+		for(ImperialTIEFighter ft:fighters){
+			float tieLeft = (float) ft.getX() - (ft.getAnimation().getWidth()/2);
+			float tieDown = (float) ft.getY() + (ft.getAnimation().getHeight()/2);
+			float tieUp = (float) ft.getY() - (ft.getAnimation().getHeight()/2);
+			System.out.println(tieLeft + " - " + xwingRight + " " + xwing.getX() + " " + (float)xwing.getAnimation().getWidth());
+			System.out.println(tieLeft + " - " + xwingRight + " " + xwing.getY() + " " + (float)xwing.getAnimation().getHeight()/2);
+			if(!ft.isDead() && tieLeft - xwingRight  <= MIN_DIST_FROM_DISTANCE_X 
+					&& ((tieDown - xwingUp <= MIN_DIST_FROM_DISTANCE_Y) ||
+						(tieUp - xwingDown <= MIN_DIST_FROM_DISTANCE_Y))){
+				System.out.println("Colliding");
+				System.out.println(tieLeft + " - " + xwingRight);
+				System.out.println(tieDown + " - " + xwingUp);
+				System.out.println(tieUp + " - " + xwingDown);
+				//ft.setDead(true);
 				return true;
 			}
+			if(tieLeft - xwingRight <= MIN_DIST_FROM_DISTANCE_X){
+				ft.setDead(true);
+			}
 		}
-		if(general.getX()-luke.getX()<=MIN_DIST_FROM_DISTANCE){
+		/*if(general.getX()-xwing.getX()<=MIN_DIST_FROM_DISTANCE){
 			return true;
-		}
+		}*/
 		return false;
 	}
 	
 	private void checkIfAttacked(){
 		for(Laser laser:lasers){
-			float lukeRight = ((float)luke.getAnimation().getWidth()/2) + luke.getX();
-			if(laser.getX() <= lukeRight && laser.getX()>=luke.getX() 
+			float xwingRight = ((float)xwing.getAnimation().getWidth()) + xwing.getX();
+			float xwingDown = ((float)xwing.getAnimation().getHeight()/2) + xwing.getY();
+			float xwingUp = ((float)xwing.getAnimation().getHeight()/2) - xwing.getY();
+			if(laser.getX() <= xwingRight && laser.getX()>=xwing.getX() 
+					&& (laser.getY() <= xwingUp || laser.getY() <= xwingDown) && laser.getY()>=xwing.getY()
 					&& !jumping){
-				luke.decreaseHealth(Laser.DAMAGE);
+				xwing.decreaseHealth(Laser.DAMAGE);
 				lasers.remove(laser);
 				return;
 			}
 		}
 		long timeDiff = System.currentTimeMillis() - general.getTimeLastAttack();
-		if(general.getX()-luke.getX()<=MIN_DIST_FROM_DISTANCE){
+		if(general.getX()-xwing.getX()<=MIN_DIST_FROM_DISTANCE_X){
 			if(timeDiff >= GeneralGrievous.ATTACK_INTERVAL){
-				general.attack(luke);
+				//general.attack(xwing);
 			}
 			else if(timeDiff >= 600){
 				general.setAnimation(STILL);
@@ -289,15 +304,15 @@ public class ThirdLevelState extends BasicGameState{
 	}
 	
 	private void attack(){
-		for(StormTrooper trooper: troopers){
-			if(!trooper.isDead() && trooper.getX() - luke.getX() <= MIN_DIST_FROM_DISTANCE + 20
-					&& !trooper.isDying() && !jumping){
-				trooper.setDead(true);
+		for(ImperialTIEFighter fighter: fighters){
+			if(!fighter.isDead() && fighter.getX() - xwing.getX() <= MIN_DIST_FROM_DISTANCE_X + 20
+					&& !fighter.isDying() && !jumping){
+				fighter.setDead(true);
 				return;
-			}
+			}			
 		}
-		if(general.getX()-luke.getX()<=MIN_DIST_FROM_DISTANCE){
-			general.decreaseHealth(luke.getDamage());
+		if(general.getX()-xwing.getX()<=MIN_DIST_FROM_DISTANCE_X){
+			general.decreaseHealth(xwing.getDamage());
 		}
 	}
 
