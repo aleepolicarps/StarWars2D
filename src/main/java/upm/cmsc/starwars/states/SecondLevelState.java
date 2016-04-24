@@ -50,7 +50,7 @@ public class SecondLevelState extends BasicGameState{
 	private boolean attacking,jumping,paused,preboss=false,inplace=false,postboss=false,assemble=false;
 	
 	//trial gun
-	private boolean pickgun, alreadyPickedGun;
+	private boolean pickgun=false, alreadyPickedGun=false;
 	private float lastTrooperX = 0;
 	private int pickCounter = 0;
 	
@@ -156,7 +156,7 @@ public class SecondLevelState extends BasicGameState{
 								g.setColor(Color.red);
 								g.drawString("Droideka", 60, 50);
 								g.setColor(Color.white);
-								g.drawString("BOOP BEEP BOOP.", 60, 80);
+								g.drawString("KILL INTRUDER. LUKE.", 60, 80);
 								break;
 						case 2: g.drawImage(avatar_luke, 60, 50);
 								g.setColor(Color.blue);
@@ -337,15 +337,18 @@ public class SecondLevelState extends BasicGameState{
 			else if(timeDiff >= 1600){
 				if(randChoice == 0)
 					droideka.setAnimation(TOATTACK);
-				else
-					droideka.setAnimation(TOSHIELD);
+				else{
+					if(!droideka.isShielding())
+						droideka.setAnimation(TOSHIELD);
+				}
 			}else if(timeDiff >= 600){
-				droideka.setAnimation(STILL);
+				if(!droideka.isShielding())
+					droideka.setAnimation(STILL);
 			}
 		}
 		
 		if(droideka.isDead()){
-			s.enterState(State.SECOND_LEVEL); // TODO change this according to which level is next
+			s.enterState(State.THIRD_LEVEL); // TODO change this according to which level is next
 		}
 		if(luke.isDead()){
 			s.enterState(State.GAMEOVER);
@@ -379,7 +382,8 @@ public class SecondLevelState extends BasicGameState{
 		for(int i=0;i<TROOPER_COUNT;i++){
 			x+=500+Math.random()*1000;
 			troopers.add(new StormTrooper(x,TROOPER_Y));
-		} 
+		}
+		lastTrooperX = x;
 	}
 		
 	private void removeDeadEnemyUnits(){
@@ -421,7 +425,6 @@ public class SecondLevelState extends BasicGameState{
 		int laserLukeCount = 0;
 		while(laserLuke.size()>laserLukeCount){
 			float droidekaLeft = ((float)droideka.getAnimation().getWidth()/2) + droideka.getX();
-			System.out.println(droidekaLeft + " " + droideka.getX() + " " + laserLuke.get(laserLukeCount).getX());
 			if(laserLuke.get(laserLukeCount).getX() <= droidekaLeft && laserLuke.get(laserLukeCount).getX()>=droideka.getX()){
 				if(!droideka.isShielding()){
 					droideka.decreaseHealth(luke.getDamage());
@@ -439,7 +442,6 @@ public class SecondLevelState extends BasicGameState{
 			try {
 				laserLuke.add(new Laser(luke.getX()+30, LASER_Y+10, 1));
 			} catch (SlickException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}else{
@@ -451,10 +453,6 @@ public class SecondLevelState extends BasicGameState{
 				}
 			}
 		}
-		/*if(droideka.getX()-luke.getX()<=MIN_DIST_FROM_DISTANCE){
-			if(!droideka.isShielding())
-				droideka.decreaseHealth(luke.getDamage());
-		}*/
 	}
 
 	@Override

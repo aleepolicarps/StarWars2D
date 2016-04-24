@@ -1,7 +1,6 @@
 package upm.cmsc.starwars.entities;
 
 import static org.apache.commons.io.FilenameUtils.removeExtension;
-import static upm.cmsc.starwars.entities.LukeSkywalker.MIN_DIST_FROM_DISTANCE;
 
 import java.io.File;
 import java.io.IOException;
@@ -90,7 +89,7 @@ public class Droideka {
 		attack = new Animation(imgSequence7,duration7,false);
 		
 		Image[] imgSequence8 = {images.get("shield_3")};
-		int[] duration8 = {200};
+		int[] duration8 = {500};
 		shield = new Animation(imgSequence8,duration8,false);
 	}
 	

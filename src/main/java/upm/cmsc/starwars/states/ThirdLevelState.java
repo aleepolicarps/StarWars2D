@@ -254,8 +254,8 @@ public class ThirdLevelState extends BasicGameState{
 			float tieLeft = (float) ft.getX() - (ft.getAnimation().getWidth()/2);
 			float tieDown = (float) ft.getY() + (ft.getAnimation().getHeight()/2);
 			float tieUp = (float) ft.getY() - (ft.getAnimation().getHeight()/2);
-			System.out.println(tieLeft + " - " + xwingRight + " " + xwing.getX() + " " + (float)xwing.getAnimation().getWidth());
-			System.out.println(tieLeft + " - " + xwingRight + " " + xwing.getY() + " " + (float)xwing.getAnimation().getHeight()/2);
+			//System.out.println(tieLeft + " - " + xwingRight + " " + xwing.getX() + " " + (float)xwing.getAnimation().getWidth());
+			//System.out.println(tieLeft + " - " + xwingRight + " " + xwing.getY() + " " + (float)xwing.getAnimation().getHeight()/2);
 			if(!ft.isDead() && tieLeft - xwingRight  <= MIN_DIST_FROM_DISTANCE_X 
 					&& ((tieDown - xwingUp <= MIN_DIST_FROM_DISTANCE_Y) ||
 						(tieUp - xwingDown <= MIN_DIST_FROM_DISTANCE_Y))){
