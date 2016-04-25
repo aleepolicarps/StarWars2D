@@ -23,9 +23,9 @@ public class XWingStarfighter {
 	public static final long ATTACK_DURATION = 300;
 	public static final long JUMP_DURATION = 250;
 	public static final int MAX_HEALTH = 300;
-	public static final float H_DISPLACEMENT_FORWARD = 0.2f;
-	public static final float H_DISPLACEMENT_UPWARD = 0.2f;
-	public static final float H_DISPLACEMENT_DOWNWARD = 0.2f;
+	public static final float H_DISPLACEMENT_FORWARD = 0.1f;
+	public static final float H_DISPLACEMENT_UPWARD = 0.3f;
+	public static final float H_DISPLACEMENT_DOWNWARD = 0.3f;
 	public static final float INITIAL_VELOCITY = 5;
 	public static final float INIT_H_VELOCITY = 50f;
 	public static final int MIN_DIST_FROM_DISTANCE_X= 5;

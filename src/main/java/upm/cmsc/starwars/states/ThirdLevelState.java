@@ -49,6 +49,7 @@ public class ThirdLevelState extends BasicGameState{
 	private GeneralGrievous general;
 	private List<ImperialTIEFighter> fighters = new ArrayList<ImperialTIEFighter>();
 	private List<Laser> lasers = new ArrayList<Laser>();
+	private List<Laser> laserXwing= new ArrayList<Laser>();
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
@@ -87,6 +88,10 @@ public class ThirdLevelState extends BasicGameState{
 		for(Laser laser:lasers){
 			laser.getImage().draw(laser.getX(), laser.getY());
 		}
+		for(Laser laser:laserXwing){
+			laser.getImage().draw(laser.getX(), laser.getY());
+		}
+		
 		if(fighters.isEmpty()){
 			general.getAnimation().draw(general.getX(),general.getY());
 			g.setColor(Color.black);
@@ -185,6 +190,9 @@ public class ThirdLevelState extends BasicGameState{
 		for(Laser laser: lasers){
 			laser.updateXPosition(delta);
 		}
+		for(Laser laser: laserXwing){
+			laser.updateXPosition(delta);
+		}
 		checkIfAttacked();
 		
 		general.getAnimation().update(delta);
@@ -246,7 +254,7 @@ public class ThirdLevelState extends BasicGameState{
 	}
 	
 	private boolean isXWingColliding(){
-		float xwingRight = (float) xwing.getX() + (xwing.getAnimation().getWidth()/2);
+		/*float xwingRight = (float) xwing.getX() + (xwing.getAnimation().getWidth()/2);
 		float xwingDown = (float) xwing.getY() + (xwing.getAnimation().getHeight()/2);
 		float xwingUp = (float) xwing.getY() - (xwing.getAnimation().getHeight()/2);
 	
@@ -268,8 +276,8 @@ public class ThirdLevelState extends BasicGameState{
 			}
 			if(tieLeft - xwingRight <= MIN_DIST_FROM_DISTANCE_X){
 				ft.setDead(true);
-			}
-		}
+			a}
+		}(/
 		/*if(general.getX()-xwing.getX()<=MIN_DIST_FROM_DISTANCE){
 			return true;
 		}*/
@@ -304,15 +312,36 @@ public class ThirdLevelState extends BasicGameState{
 	}
 	
 	private void attack(){
-		for(ImperialTIEFighter fighter: fighters){
-			if(!fighter.isDead() && fighter.getX() - xwing.getX() <= MIN_DIST_FROM_DISTANCE_X + 20
-					&& !fighter.isDying() && !jumping){
-				fighter.setDead(true);
-				return;
-			}			
-		}
+		try {
+			laserXwing.add(new Laser(xwing.getX()+30, xwing.getY(), 1));
+		} catch (SlickException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		
 		if(general.getX()-xwing.getX()<=MIN_DIST_FROM_DISTANCE_X){
 			general.decreaseHealth(xwing.getDamage());
+		}
+		
+		for(Laser laser:laserXwing){
+			/*float xwingRight = ((float)xwing.getAnimation().getWidth()) + xwing.getX();
+			float xwingDown = ((float)xwing.getAnimation().getHeight()/2) + xwing.getY();
+			float xwingUp = ((float)xwing.getAnimation().getHeight()/2) - xwing.getY();
+			if(laser.getX() <= xwingRight && laser.getX()>=xwing.getX() 
+					&& (laser.getY() <= xwingUp || laser.getY() <= xwingDown) && laser.getY()>=xwing.getY()
+					&& !jumping){
+				xwing.decreaseHealth(Laser.DAMAGE);
+				lasers.remove(laser);
+				return;
+			}*/
+			for(ImperialTIEFighter fighter: fighters){
+				System.out.println(laser.getY() + " = "+ fighter.getY());
+				if(!fighter.isDead() && (laser.getY() <= fighter.getY()+5 && laser.getY() >= fighter.getY()-5)){
+					fighter.setDead(true);
+					System.out.println("Dead");
+				}
+				return;
+			}
 		}
 	}
 
