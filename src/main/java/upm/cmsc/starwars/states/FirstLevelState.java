@@ -5,6 +5,7 @@ import static upm.cmsc.starwars.entities.Action.JUMP;
 import static upm.cmsc.starwars.entities.Action.STILL;
 import static upm.cmsc.starwars.entities.Action.WALK;
 import static upm.cmsc.starwars.entities.Action.TOATTACK;
+import static upm.cmsc.starwars.entities.Action.DEAD;
 import static upm.cmsc.starwars.entities.LukeSkywalker.ATTACK_DURATION;
 import static upm.cmsc.starwars.entities.LukeSkywalker.H_DISPLACEMENT_BACKWARD;
 import static upm.cmsc.starwars.entities.LukeSkywalker.H_DISPLACEMENT_FORWARD;
@@ -42,7 +43,7 @@ public class FirstLevelState extends BasicGameState{
 	private final long LASER_INTERVAL = 3000;
 	
 	private Image tree,tumbleweed,background,path,avatar_grievous,avatar_luke;
-	private boolean attacking,jumping,paused,preboss=false,inplace=false,postboss=false;
+	private boolean attacking,jumping,paused,preboss=false,inplace=false,postboss=false,endLevel=false;
 	private float hVelocity;
 	private long timeStarted;
 	private long timeLastBulletFired;
@@ -57,7 +58,6 @@ public class FirstLevelState extends BasicGameState{
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
-		
 		loadImages();
 		loadEnemyUnits();
 		initializeCharacters();
@@ -92,13 +92,13 @@ public class FirstLevelState extends BasicGameState{
 			tumbleweed.draw(x,420);
 			x+=20;
 		}
-		
+
 		x = tumbleweedX;
 		while(x<background.getWidth()){
 			path.draw(x,545);
 			x+=background.getWidth();
 		}
-		
+
 		for(BattleDroid droid:droids){
 			droid.getAnimation().draw(droid.getX(), droid.getY());
 		}
@@ -108,7 +108,7 @@ public class FirstLevelState extends BasicGameState{
 		for(Laser laser:lasers){
 			laser.getImage().draw(laser.getX(), laser.getY());
 		}
-		
+
 		if(droids.isEmpty()){
 			if(preboss){
 				g.setColor(Color.white);
@@ -150,14 +150,45 @@ public class FirstLevelState extends BasicGameState{
 				g.setColor(general.getCurrentHealthColor());
 				g.fillRect(560, 30, general.getCurrHealth(), 20);
 			}
+			if(endLevel){
+				general.setAnimation(DEAD);
+				g.setColor(Color.white);
+				g.fillRect(40, 30, 700, 120);
+				g.setColor(Color.black);
+				g.fillRect(50, 40, 680, 100);
+				switch(talkCounter){
+				case 0:/* g.setColor(Color.white);
+						g.drawString("Press S to continue.", 55, 45);
+						break;*/
+				case 1: g.drawImage(avatar_grievous, 640, 50);
+						g.setColor(Color.red);
+						g.drawString("General Grievous", 60, 50);
+						g.setColor(Color.white);
+						g.drawString("No... it can't be.", 60, 80);
+						break;
+				case 2: g.drawImage(avatar_luke, 60, 50);
+						g.setColor(Color.blue);
+						g.drawString("Luke Skywalker", 150, 50);
+						g.setColor(Color.white);
+						g.drawString("General Grievous. Where is Darth Vader?", 150, 80);
+						//g.drawString("you'd like to meet.", 150, 100);
+						break;
+				case 3: g.drawImage(avatar_grievous, 640, 50);
+						g.setColor(Color.red);
+						g.drawString("General Grievous", 60, 50);
+						g.setColor(Color.white);
+						g.drawString(".....", 60, 80);
+						break;
+				case 4: s.enterState(State.SECOND_LEVEL);
+						break;
+				}
+			}
 			general.getAnimation().draw(general.getX(),general.getY());
 		}
-		
 		if(paused){
 			g.setColor(Color.black);
 			g.drawString("PAUSED", 370, 200);
 		}
-		
 	}
 
 	@Override
@@ -175,7 +206,7 @@ public class FirstLevelState extends BasicGameState{
 			gc.setPaused(paused);
 		}
 		
-		if(gc.getInput().isKeyPressed(Input.KEY_S)&&preboss){
+		if(gc.getInput().isKeyPressed(Input.KEY_S)&&(preboss||endLevel)){
 			talkCounter++;
 		}
 		
@@ -183,7 +214,7 @@ public class FirstLevelState extends BasicGameState{
 			return;
 		}
 		
-		if(gc.getInput().isKeyDown(Input.KEY_RIGHT) && !jumping && !isLukeColliding() && !preboss){
+		if(gc.getInput().isKeyDown(Input.KEY_RIGHT) && !jumping && !isLukeColliding() && !preboss && !endLevel){
 			luke.setAnimation(WALK);
 			if(luke.getX()<MAX_X){
 				luke.addToX(delta*H_DISPLACEMENT_FORWARD);
@@ -199,10 +230,8 @@ public class FirstLevelState extends BasicGameState{
 					droid.addToX(-1*delta*H_DISPLACEMENT_FORWARD);
 				}
 			}
-			
-			
 		}
-		else if(gc.getInput().isKeyDown(Input.KEY_LEFT) && !jumping && !preboss){
+		else if(gc.getInput().isKeyDown(Input.KEY_LEFT) && !jumping && !preboss && !endLevel){
 			luke.setAnimation(WALK);
 			if(luke.getX()<=MAX_X){
 				luke.addToX(-1*delta*H_DISPLACEMENT_BACKWARD);
@@ -212,7 +241,7 @@ public class FirstLevelState extends BasicGameState{
 				}
 			}
 		}
-		else if(gc.getInput().isKeyPressed(Input.KEY_A) && !attacking && !jumping && !preboss){
+		else if(gc.getInput().isKeyPressed(Input.KEY_A) && !attacking && !jumping && !preboss && !endLevel){
 				luke.setAnimation(ATTACK);
 				attacking = true;
 				timeStarted = System.currentTimeMillis();
@@ -225,7 +254,7 @@ public class FirstLevelState extends BasicGameState{
 				attacking = false;
 			}
 		}
-		else if(gc.getInput().isKeyPressed(Input.KEY_UP) && !jumping && !preboss){
+		else if(gc.getInput().isKeyPressed(Input.KEY_UP) && !jumping && !preboss && !endLevel){
 			luke.setAnimation(JUMP);
 			jumping = true;
 			timeStarted = System.currentTimeMillis();
@@ -275,12 +304,15 @@ public class FirstLevelState extends BasicGameState{
 				}
 			}
 		}
-		if(general.isDead()){
-			s.enterState(State.SECOND_LEVEL);
+		if(general.isDead()&&!endLevel){
+			talkCounter = 0;
+			endLevel = true;
 		}
+		
 		if(luke.isDead()){
 			s.enterState(State.GAMEOVER);
 		}
+		
 		if(droids.isEmpty()&&!postboss){
 			preboss = true;
 		}
