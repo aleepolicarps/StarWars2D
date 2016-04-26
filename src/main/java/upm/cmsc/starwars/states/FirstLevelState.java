@@ -24,6 +24,8 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.state.transition.FadeInTransition;
+import org.newdawn.slick.state.transition.FadeOutTransition;
 
 import upm.cmsc.starwars.CustomFileUtil;
 import upm.cmsc.starwars.Window;
@@ -157,30 +159,26 @@ public class FirstLevelState extends BasicGameState{
 				g.setColor(Color.black);
 				g.fillRect(50, 40, 680, 100);
 				switch(talkCounter){
-				case 0:/* g.setColor(Color.white);
-						g.drawString("Press S to continue.", 55, 45);
-						break;*/
-				case 1: g.drawImage(avatar_grievous, 640, 50);
+				case 0: g.drawImage(avatar_grievous, 640, 50);
 						g.setColor(Color.red);
 						g.drawString("General Grievous", 60, 50);
 						g.setColor(Color.white);
 						g.drawString("No... it can't be.", 60, 80);
 						break;
-				case 2: g.drawImage(avatar_luke, 60, 50);
+				case 1: g.drawImage(avatar_luke, 60, 50);
 						g.setColor(Color.blue);
 						g.drawString("Luke Skywalker", 150, 50);
 						g.setColor(Color.white);
 						g.drawString("General Grievous. Where is Darth Vader?", 150, 80);
-						//g.drawString("you'd like to meet.", 150, 100);
 						break;
-				case 3: g.drawImage(avatar_grievous, 640, 50);
+				case 2: g.drawImage(avatar_grievous, 640, 50);
 						g.setColor(Color.red);
 						g.drawString("General Grievous", 60, 50);
 						g.setColor(Color.white);
 						g.drawString(".....", 60, 80);
 						break;
-				case 4: MenuState.setCurrentGameLevel(2);
-						s.enterState(State.TRANS_STATE);
+				case 3: MenuState.setCurrentGameLevel(2);
+						s.enterState(State.TRANS_STATE, new FadeOutTransition(), new FadeInTransition());
 						break;
 				}
 			}

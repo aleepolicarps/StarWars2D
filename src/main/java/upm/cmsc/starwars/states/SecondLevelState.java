@@ -27,12 +27,12 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.state.transition.FadeInTransition;
+import org.newdawn.slick.state.transition.FadeOutTransition;
 
 import upm.cmsc.starwars.CustomFileUtil;
 import upm.cmsc.starwars.Window;
-import upm.cmsc.starwars.entities.Action;
 import upm.cmsc.starwars.entities.Droideka;
-import upm.cmsc.starwars.entities.GeneralGrievous;
 import upm.cmsc.starwars.entities.Laser;
 import upm.cmsc.starwars.entities.LukeSkywalker;
 import upm.cmsc.starwars.entities.StormTrooper;
@@ -47,10 +47,13 @@ public class SecondLevelState extends BasicGameState{
 	private final int TROOPER_COUNT = 1;
 	private final long LASER_INTERVAL = 3000;
 	
-	private Image background,avatar_droideka,avatar_luke;
-	private boolean attacking,jumping,paused,preboss=false,inplace=false,postboss=false,endlevel=false,assemble=false;
+	private Image background,avatar_droideka,avatar_luke,avatar_r2d2;
+	private boolean attacking,jumping,paused;
+	private boolean preboss=false,inplace=false,postboss=false,endlevel=false,assemble=false;
+
+	private long timeDeadDroideka = 0;
+	private boolean deadDroideka = false;
 	
-	//trial gun
 	private boolean pickgun=false, alreadyPickedGun=false;
 	private float lastTrooperX = 0;
 	private int pickCounter = 0;
@@ -162,8 +165,8 @@ public class SecondLevelState extends BasicGameState{
 								g.setColor(Color.blue);
 								g.drawString("Luke Skywalker", 150, 50);
 								g.setColor(Color.white);
-								g.drawString("A Droideka.", 150, 80);
-								//g.drawString("", 150, 100);
+								g.drawString("A Droideka. It may have information regarding Darth ", 150, 80);
+								g.drawString("Vader's location. I must locate him.", 150, 100);
 								break;
 						case 3: preboss = false;
 								postboss = true;
@@ -202,22 +205,26 @@ public class SecondLevelState extends BasicGameState{
 						g.setColor(Color.white);
 						g.drawString(".....", 60, 80);
 						break;
-				case 3:	droideka.setAnimation(DEAD);
+				case 3:	if(!deadDroideka){
+							droideka.setAnimation(DEAD);
+							timeDeadDroideka = System.currentTimeMillis();
+						}
+						deadDroideka = true;
 						break;
 				case 4:	g.drawImage(avatar_luke, 60, 50);
 						g.setColor(Color.blue);
 						g.drawString("Luke Skywalker", 150, 50);
 						g.setColor(Color.white);
-						g.drawString("*sigh* R2, I'm coming back to the XWing. Prep for launch.", 150, 80);
+						g.drawString("*sigh* R2, I'm coming back to the X-Wing. We are leaving.", 150, 80);
 						break;
-				case 5: g.drawImage(avatar_droideka, 640, 50);
+				case 5: g.drawImage(avatar_r2d2, 640, 50);
 						g.setColor(Color.blue);
 						g.drawString("R2-D2", 60, 50);
 						g.setColor(Color.white);
 						g.drawString("Beep Bloop Bleep Blop Boop", 60, 80);
 						break;
 				case 6:	MenuState.setCurrentGameLevel(3);
-						s.enterState(State.TRANS_STATE);
+						s.enterState(State.TRANS_STATE, new FadeOutTransition(), new FadeInTransition());
 						break;
 				}
 			}
@@ -232,6 +239,14 @@ public class SecondLevelState extends BasicGameState{
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame s, int delta) throws SlickException {
+		
+		if(deadDroideka){
+			if(System.currentTimeMillis() - timeDeadDroideka >= 200){
+				droideka.getAnimation().setCurrentFrame(2);
+				droideka.getAnimation().stop();
+				deadDroideka = false;
+			}
+		}
 		
 		if(luke.getX()>=lastTrooperX&&!alreadyPickedGun){
 			pickgun = true;
@@ -419,6 +434,7 @@ public class SecondLevelState extends BasicGameState{
 		background = new Image(CustomFileUtil.getFilePath("/background/spaceship_interior.png"));
 		avatar_droideka = new Image(CustomFileUtil.getFilePath("/avatars/avatar_droideka.png"));
 		avatar_luke = new Image(CustomFileUtil.getFilePath("/avatars/avatar_luke.png"));
+		avatar_r2d2 = new Image(CustomFileUtil.getFilePath("/avatars/avatar_r2d2.png"));
 	}
 	
 	private void loadEnemyUnits() throws SlickException{
