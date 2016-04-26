@@ -8,6 +8,8 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.state.transition.FadeInTransition;
+import org.newdawn.slick.state.transition.FadeOutTransition;
 
 import upm.cmsc.starwars.CustomFileUtil;
 
@@ -53,7 +55,17 @@ public class GameOverState extends BasicGameState{
 		//restart
 		if((posX>310 && posX<470)&& (posY>275 && posY<300)){
 			if(Mouse.isButtonDown(Input.MOUSE_LEFT_BUTTON)){
-				//s.enterState(6);
+				switch (MenuState.getCurrentGameLevel()){
+				case 1:	s.getState(State.FIRST_LEVEL).init(gc, s);
+						s.enterState(State.FIRST_LEVEL, new FadeOutTransition(), new FadeInTransition());
+						break;
+				case 2:	s.getState(State.SECOND_LEVEL).init(gc, s);
+						s.enterState(State.SECOND_LEVEL, new FadeOutTransition(), new FadeInTransition());
+						break;
+				case 3:	s.getState(State.THIRD_LEVEL).init(gc, s);
+						s.enterState(State.THIRD_LEVEL, new FadeOutTransition(), new FadeInTransition());
+						break;
+				}
 			}
 		}
 		

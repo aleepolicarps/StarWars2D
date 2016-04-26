@@ -7,6 +7,8 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.state.transition.FadeInTransition;
+import org.newdawn.slick.state.transition.FadeOutTransition;
 
 public class TransitionState extends BasicGameState {
 	
@@ -24,10 +26,10 @@ public class TransitionState extends BasicGameState {
 				g.drawString("Proceeding to next level. Click S to continue.", 60, 80);
 				break;
 		case 1: if(MenuState.getCurrentGameLevel()==2){
-					game.enterState(State.SECOND_LEVEL);
+					game.enterState(State.SECOND_LEVEL, new FadeOutTransition(), new FadeInTransition());
 					counter = 0;
 				}else if(MenuState.getCurrentGameLevel()==3){
-					game.enterState(State.THIRD_LEVEL);
+					game.enterState(State.THIRD_LEVEL, new FadeOutTransition(), new FadeInTransition());
 					counter = 0;
 				}
 		}
