@@ -1,6 +1,7 @@
 package upm.cmsc.starwars.states;
 
 import static upm.cmsc.starwars.entities.Action.ATTACK;
+import static upm.cmsc.starwars.entities.Action.DEAD;
 import static upm.cmsc.starwars.entities.Action.JUMP;
 import static upm.cmsc.starwars.entities.Action.STILL;
 import static upm.cmsc.starwars.entities.Action.TOATTACK;
@@ -47,7 +48,7 @@ public class SecondLevelState extends BasicGameState{
 	private final long LASER_INTERVAL = 3000;
 	
 	private Image background,avatar_droideka,avatar_luke;
-	private boolean attacking,jumping,paused,preboss=false,inplace=false,postboss=false,assemble=false;
+	private boolean attacking,jumping,paused,preboss=false,inplace=false,postboss=false,endlevel=false,assemble=false;
 	
 	//trial gun
 	private boolean pickgun=false, alreadyPickedGun=false;
@@ -78,7 +79,6 @@ public class SecondLevelState extends BasicGameState{
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame s, Graphics g) throws SlickException {
-		
 		removeDeadEnemyUnits();
 		
 		float x;
@@ -177,6 +177,49 @@ public class SecondLevelState extends BasicGameState{
 				g.fillRect(560, 30, Droideka.MAX_HEALTH, 20);
 				g.setColor(droideka.getCurrentHealthColor());
 				g.fillRect(560, 30, droideka.getCurrHealth(), 20);
+			}		
+			if(endlevel){
+				g.setColor(Color.white);
+				g.fillRect(40, 30, 700, 120);
+				g.setColor(Color.black);
+				g.fillRect(50, 40, 680, 100);
+				switch(talkCounter){
+				case 0: g.drawImage(avatar_droideka, 640, 50);
+						g.setColor(Color.red);
+						g.drawString("Droideka", 60, 50);
+						g.setColor(Color.white);
+						g.drawString("YOU... WILL... NOT...", 60, 80);
+						break;
+				case 1: g.drawImage(avatar_luke, 60, 50);
+						g.setColor(Color.blue);
+						g.drawString("Luke Skywalker", 150, 50);
+						g.setColor(Color.white);
+						g.drawString("Will what? Answer me!", 150, 80);
+						break;
+				case 2: g.drawImage(avatar_droideka, 640, 50);
+						g.setColor(Color.red);
+						g.drawString("Droideka", 60, 50);
+						g.setColor(Color.white);
+						g.drawString(".....", 60, 80);
+						break;
+				case 3:	droideka.setAnimation(DEAD);
+						break;
+				case 4:	g.drawImage(avatar_luke, 60, 50);
+						g.setColor(Color.blue);
+						g.drawString("Luke Skywalker", 150, 50);
+						g.setColor(Color.white);
+						g.drawString("*sigh* R2, I'm coming back to the XWing. Prep for launch.", 150, 80);
+						break;
+				case 5: g.drawImage(avatar_droideka, 640, 50);
+						g.setColor(Color.blue);
+						g.drawString("R2-D2", 60, 50);
+						g.setColor(Color.white);
+						g.drawString("Beep Bloop Bleep Blop Boop", 60, 80);
+						break;
+				case 6:	MenuState.setCurrentGameLevel(3);
+						s.enterState(State.TRANS_STATE);
+						break;
+				}
 			}
 			droideka.getAnimation().draw(droideka.getX(),droideka.getY());
 		}
@@ -212,10 +255,10 @@ public class SecondLevelState extends BasicGameState{
 			gc.setPaused(paused);
 		}
 		
-		if(gc.getInput().isKeyPressed(Input.KEY_S)&&(preboss||pickgun)){
+		if(gc.getInput().isKeyPressed(Input.KEY_S)&&(preboss||pickgun||endlevel)){
 			if(pickgun){
 				pickCounter++;
-			}else if(preboss){	
+			}else if(preboss||endlevel){	
 				talkCounter++;
 			}
 		}
@@ -224,7 +267,7 @@ public class SecondLevelState extends BasicGameState{
 			return;
 		}
 		
-		if(gc.getInput().isKeyDown(Input.KEY_RIGHT) && !jumping && !isLukeColliding() && !preboss && !pickgun){
+		if(gc.getInput().isKeyDown(Input.KEY_RIGHT) && !jumping && !isLukeColliding() && !preboss && !pickgun && !endlevel){
 			luke.setAnimation(WALK);
 			if(luke.getX()<MAX_X){
 				luke.addToX(delta*H_DISPLACEMENT_FORWARD);
@@ -242,7 +285,7 @@ public class SecondLevelState extends BasicGameState{
 			
 			
 		}
-		else if(gc.getInput().isKeyDown(Input.KEY_LEFT) && !jumping && !preboss  && !pickgun){
+		else if(gc.getInput().isKeyDown(Input.KEY_LEFT) && !jumping && !preboss  && !pickgun && !endlevel){
 			luke.setAnimation(WALK);
 			if(luke.getX()<=MAX_X){
 				luke.addToX(-1*delta*H_DISPLACEMENT_BACKWARD);
@@ -252,7 +295,7 @@ public class SecondLevelState extends BasicGameState{
 				}
 			}
 		}
-		else if(gc.getInput().isKeyPressed(Input.KEY_A) && !attacking && !jumping && !preboss  && !pickgun){
+		else if(gc.getInput().isKeyPressed(Input.KEY_A) && !attacking && !jumping && !preboss  && !pickgun && !endlevel){
 				luke.setAnimation(ATTACK);
 				attacking = true;
 				timeStarted = System.currentTimeMillis();
@@ -264,7 +307,7 @@ public class SecondLevelState extends BasicGameState{
 				attacking = false;
 			}
 		}
-		else if(gc.getInput().isKeyPressed(Input.KEY_UP) && !jumping && !preboss  && !pickgun){
+		else if(gc.getInput().isKeyPressed(Input.KEY_UP) && !jumping && !preboss  && !pickgun && !endlevel){
 			luke.setAnimation(JUMP);
 			jumping = true;
 			timeStarted = System.currentTimeMillis();
@@ -318,7 +361,7 @@ public class SecondLevelState extends BasicGameState{
 			}
 		}
 
-		if(postboss){
+		if(postboss&&!endlevel){
 			long timeDiff = System.currentTimeMillis() - droideka.getTimeLastAttack();
 			Random rand = new Random();
 			if(!randSet){
@@ -347,8 +390,9 @@ public class SecondLevelState extends BasicGameState{
 			}
 		}
 		
-		if(droideka.isDead()){
-			s.enterState(State.THIRD_LEVEL); // TODO change this according to which level is next
+		if(droideka.isDead() && !endlevel){
+			talkCounter = 0;
+			endlevel = true;
 		}
 		if(luke.isDead()){
 			s.enterState(State.GAMEOVER);

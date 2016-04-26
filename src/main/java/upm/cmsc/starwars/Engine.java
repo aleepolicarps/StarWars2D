@@ -13,6 +13,7 @@ import upm.cmsc.starwars.states.MenuState;
 import upm.cmsc.starwars.states.SecondLevelState;
 import upm.cmsc.starwars.states.StoryBoardState;
 import upm.cmsc.starwars.states.ThirdLevelState;
+import upm.cmsc.starwars.states.TransitionState;
 
 public class Engine extends StateBasedGame {
 
@@ -37,6 +38,7 @@ public class Engine extends StateBasedGame {
 		this.addState(new SecondLevelState());
 		this.addState(new ThirdLevelState());
 		this.addState(new GameOverState());
+		this.addState(new TransitionState());
 	}
 
 	public static void main(String[] args) {

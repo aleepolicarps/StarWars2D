@@ -9,4 +9,5 @@ public class State {
 	public static final int FIRST_LEVEL = 6;
 	public static final int SECOND_LEVEL = 7;
 	public static final int THIRD_LEVEL = 8;
+	public static final int TRANS_STATE = 9;
 }

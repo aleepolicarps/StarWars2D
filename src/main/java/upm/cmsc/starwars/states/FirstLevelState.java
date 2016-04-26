@@ -43,7 +43,7 @@ public class FirstLevelState extends BasicGameState{
 	private final long LASER_INTERVAL = 3000;
 	
 	private Image tree,tumbleweed,background,path,avatar_grievous,avatar_luke;
-	private boolean attacking,jumping,paused,preboss=false,inplace=false,postboss=false,endLevel=false;
+	private boolean attacking,jumping,paused,preboss=false,inplace=false,postboss=false,endlevel=false;
 	private float hVelocity;
 	private long timeStarted;
 	private long timeLastBulletFired;
@@ -150,7 +150,7 @@ public class FirstLevelState extends BasicGameState{
 				g.setColor(general.getCurrentHealthColor());
 				g.fillRect(560, 30, general.getCurrHealth(), 20);
 			}
-			if(endLevel){
+			if(endlevel){
 				general.setAnimation(DEAD);
 				g.setColor(Color.white);
 				g.fillRect(40, 30, 700, 120);
@@ -179,7 +179,8 @@ public class FirstLevelState extends BasicGameState{
 						g.setColor(Color.white);
 						g.drawString(".....", 60, 80);
 						break;
-				case 4: s.enterState(State.SECOND_LEVEL);
+				case 4: MenuState.setCurrentGameLevel(2);
+						s.enterState(State.TRANS_STATE);
 						break;
 				}
 			}
@@ -206,7 +207,7 @@ public class FirstLevelState extends BasicGameState{
 			gc.setPaused(paused);
 		}
 		
-		if(gc.getInput().isKeyPressed(Input.KEY_S)&&(preboss||endLevel)){
+		if(gc.getInput().isKeyPressed(Input.KEY_S)&&(preboss||endlevel)){
 			talkCounter++;
 		}
 		
@@ -214,7 +215,7 @@ public class FirstLevelState extends BasicGameState{
 			return;
 		}
 		
-		if(gc.getInput().isKeyDown(Input.KEY_RIGHT) && !jumping && !isLukeColliding() && !preboss && !endLevel){
+		if(gc.getInput().isKeyDown(Input.KEY_RIGHT) && !jumping && !isLukeColliding() && !preboss && !endlevel){
 			luke.setAnimation(WALK);
 			if(luke.getX()<MAX_X){
 				luke.addToX(delta*H_DISPLACEMENT_FORWARD);
@@ -231,7 +232,7 @@ public class FirstLevelState extends BasicGameState{
 				}
 			}
 		}
-		else if(gc.getInput().isKeyDown(Input.KEY_LEFT) && !jumping && !preboss && !endLevel){
+		else if(gc.getInput().isKeyDown(Input.KEY_LEFT) && !jumping && !preboss && !endlevel){
 			luke.setAnimation(WALK);
 			if(luke.getX()<=MAX_X){
 				luke.addToX(-1*delta*H_DISPLACEMENT_BACKWARD);
@@ -241,7 +242,7 @@ public class FirstLevelState extends BasicGameState{
 				}
 			}
 		}
-		else if(gc.getInput().isKeyPressed(Input.KEY_A) && !attacking && !jumping && !preboss && !endLevel){
+		else if(gc.getInput().isKeyPressed(Input.KEY_A) && !attacking && !jumping && !preboss && !endlevel){
 				luke.setAnimation(ATTACK);
 				attacking = true;
 				timeStarted = System.currentTimeMillis();
@@ -254,7 +255,7 @@ public class FirstLevelState extends BasicGameState{
 				attacking = false;
 			}
 		}
-		else if(gc.getInput().isKeyPressed(Input.KEY_UP) && !jumping && !preboss && !endLevel){
+		else if(gc.getInput().isKeyPressed(Input.KEY_UP) && !jumping && !preboss && !endlevel){
 			luke.setAnimation(JUMP);
 			jumping = true;
 			timeStarted = System.currentTimeMillis();
@@ -304,9 +305,9 @@ public class FirstLevelState extends BasicGameState{
 				}
 			}
 		}
-		if(general.isDead()&&!endLevel){
+		if(general.isDead()&&!endlevel){
 			talkCounter = 0;
-			endLevel = true;
+			endlevel = true;
 		}
 		
 		if(luke.isDead()){
@@ -380,14 +381,15 @@ public class FirstLevelState extends BasicGameState{
 			}
 		}
 		long timeDiff = System.currentTimeMillis() - general.getTimeLastAttack();
-
-		if(timeDiff >= GeneralGrievous.ATTACK_INTERVAL){
-			general.attack(luke);
-		}
-		else if(timeDiff >= 1000){
-			general.setAnimation(TOATTACK);
-		}else if(timeDiff >= 600){
-			general.setAnimation(STILL);
+		if(!endlevel) {
+			if(timeDiff >= GeneralGrievous.ATTACK_INTERVAL){
+				general.attack(luke);
+			}
+			else if(timeDiff >= 1000){
+				general.setAnimation(TOATTACK);
+			}else if(timeDiff >= 600){
+				general.setAnimation(STILL);
+			}
 		}
 	}
 	

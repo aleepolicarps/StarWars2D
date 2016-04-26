@@ -14,12 +14,12 @@ import org.newdawn.slick.state.transition.FadeOutTransition;
 
 import upm.cmsc.starwars.CustomFileUtil;
 
-
-
 public class MenuState extends BasicGameState{
 	
 	Image bg,title,saber,start,storyboard,instructions,
 		credits,exit;
+	
+	private static int currentGameLevel = 0;
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
@@ -58,6 +58,7 @@ public class MenuState extends BasicGameState{
 		//start
 		if((posX>310 && posX<460)&& (posY>320 && posY<350)){
 			if(Mouse.isButtonDown(Input.MOUSE_LEFT_BUTTON)){
+				MenuState.setCurrentGameLevel(1);
 				s.enterState(State.FIRST_LEVEL, new FadeOutTransition(), new FadeInTransition());
 			}
 		}
@@ -95,6 +96,14 @@ public class MenuState extends BasicGameState{
 	@Override
 	public int getID() {
 		return State.MENU;
+	}
+
+	public static int getCurrentGameLevel() {
+		return currentGameLevel;
+	}
+
+	public static void setCurrentGameLevel(int currentGameLevel) {
+		MenuState.currentGameLevel = currentGameLevel;
 	}
 
 }
