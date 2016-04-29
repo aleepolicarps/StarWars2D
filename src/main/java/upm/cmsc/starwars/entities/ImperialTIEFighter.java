@@ -74,9 +74,9 @@ public class ImperialTIEFighter {
 		int[] duration1 = {3000};
 		attack = new Animation(imgSequence1,duration1,false);
 		
-		/*Image[] imgSequence2 = {images.get("dead1"),images.get("dead2")};
+		Image[] imgSequence2 = {images.get("still"),images.get("still")};
 		int[] duration2 = {300,1000};
-		deadAnimation = new Animation(imgSequence2,duration2,false);*/
+		deadAnimation = new Animation(imgSequence2,duration2,false);
 	}
 	
 

@@ -224,7 +224,7 @@ public class SecondLevelState extends BasicGameState{
 						g.drawString("Beep Bloop Bleep Blop Boop", 60, 80);
 						break;
 				case 6:	MenuState.setCurrentGameLevel(3);
-						s.enterState(State.TRANS_STATE, new FadeOutTransition(), new FadeInTransition());
+						s.enterState(State.TRANS_STATE);
 						break;
 				}
 			}
@@ -270,7 +270,7 @@ public class SecondLevelState extends BasicGameState{
 			gc.setPaused(paused);
 		}
 		
-		if(gc.getInput().isKeyPressed(Input.KEY_S)&&(preboss||pickgun||endlevel)){
+		if(gc.getInput().isKeyPressed(Input.KEY_S)&&((preboss&&inplace)||pickgun||endlevel)){
 			if(pickgun){
 				pickCounter++;
 			}else if(preboss||endlevel){	

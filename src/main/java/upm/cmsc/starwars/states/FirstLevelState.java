@@ -178,7 +178,7 @@ public class FirstLevelState extends BasicGameState{
 						g.drawString(".....", 60, 80);
 						break;
 				case 3: MenuState.setCurrentGameLevel(2);
-						s.enterState(State.TRANS_STATE, new FadeOutTransition(), new FadeInTransition());
+						s.enterState(State.TRANS_STATE);
 						break;
 				}
 			}
@@ -205,7 +205,7 @@ public class FirstLevelState extends BasicGameState{
 			gc.setPaused(paused);
 		}
 		
-		if(gc.getInput().isKeyPressed(Input.KEY_S)&&(preboss||endlevel)){
+		if(gc.getInput().isKeyPressed(Input.KEY_S)&&((preboss&&inplace)||endlevel)){
 			talkCounter++;
 		}
 		
