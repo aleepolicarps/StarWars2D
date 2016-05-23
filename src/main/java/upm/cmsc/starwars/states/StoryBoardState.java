@@ -14,12 +14,12 @@ public class StoryBoardState extends BasicGameState{
 	Image bg;
 	Image storyboard;
 	Image back;
-	String text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod\n" +
-					"tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,\n" +
-					"quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo\n" +
-					"consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse\n" +
-					"cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat\n" +
-					"non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+	String text = "Princess Leia was captured by Darth Vader!\n\n" +
+					"Our hero, Luke Skywalker, and his friends must now come and rescue her.\n" +
+					"Unfortunately, Darth Vader's whereabouts are unknown. Luke must now defeat\n" +
+					"different kinds of enemies to gain information about Darth Vader and rescue.\n" +
+					"Princess Leia.\n" +
+					"\nWill he succeed? Or will it be too late?";
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {

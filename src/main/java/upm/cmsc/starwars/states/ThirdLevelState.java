@@ -3,7 +3,6 @@ package upm.cmsc.starwars.states;
 import static upm.cmsc.starwars.entities.Action.ATTACK;
 import static upm.cmsc.starwars.entities.Action.STILL;
 import static upm.cmsc.starwars.entities.Action.WALK;
-import static upm.cmsc.starwars.entities.LukeSkywalker.MIN_DIST_FROM_DISTANCE;
 import static upm.cmsc.starwars.entities.XWingStarfighter.ATTACK_DURATION;
 import static upm.cmsc.starwars.entities.XWingStarfighter.H_DISPLACEMENT_FORWARD;
 import static upm.cmsc.starwars.entities.XWingStarfighter.H_DISPLACEMENT_UPWARD;
@@ -25,8 +24,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import upm.cmsc.starwars.CustomFileUtil;
 import upm.cmsc.starwars.Window;
-import upm.cmsc.starwars.entities.Action;
-import upm.cmsc.starwars.entities.BattleDroid;
+import upm.cmsc.starwars.entities.DeathStar;
 import upm.cmsc.starwars.entities.GeneralGrievous;
 import upm.cmsc.starwars.entities.ImperialTIEFighter;
 import upm.cmsc.starwars.entities.Laser;
@@ -36,19 +34,20 @@ public class ThirdLevelState extends BasicGameState{
 	
 	private final float LUKE_MIN_Y = 335;
 	private final float MAX_X = 250;
+	private final float MIN_X = 0;
 	private final float MAX_Y = 550;
 	private final float MIN_Y = 100;
-	private final int TROOPER_COUNT = 5;
+	private final int FIGHTER_COUNT = 1;
 	private final long LASER_INTERVAL = 500;
 	
 	private Image background;
-	private boolean attacking,jumping,paused;
+	private boolean attacking,paused;
 	private long timeStarted;
 	private long timeLastBulletFired;
 	private float bgX = 0;
 	private float lastFighterX = 0;
 	private XWingStarfighter xwing;
-	private GeneralGrievous general;
+	private DeathStar dstar;
 	private List<ImperialTIEFighter> fighters = new ArrayList<ImperialTIEFighter>();
 	private List<Laser> lasers = new ArrayList<Laser>();
 	private List<Laser> laserXwing= new ArrayList<Laser>();
@@ -95,13 +94,13 @@ public class ThirdLevelState extends BasicGameState{
 		}
 		
 		if(fighters.isEmpty()){
-			general.getAnimation().draw(general.getX(),general.getY());
+			dstar.getAnimation().draw(dstar.getX(),dstar.getY());
 			g.setColor(Color.black);
 			g.drawString("Death Star", 620, 10);
 			g.setColor(Color.black);
 			g.fillRect(560, 30, GeneralGrievous.MAX_HEALTH, 20);
-			g.setColor(general.getCurrentHealthColor());
-			g.fillRect(560, 30, general.getCurrHealth(), 20);
+			g.setColor(dstar.getCurrentHealthColor());
+			g.fillRect(560, 30, dstar.getCurrHealth(), 20);
 		}
 		
 		if(paused){
@@ -113,17 +112,46 @@ public class ThirdLevelState extends BasicGameState{
 	@Override
 	public void update(GameContainer gc, StateBasedGame s, int delta) throws SlickException {
 		
-		if(xwing.getX()<MAX_X){
-			xwing.addToX(delta*H_DISPLACEMENT_FORWARD);
-			if(xwing.getX()>MAX_X){
-				xwing.setX(MAX_X);
+		if(!fighters.isEmpty()){
+			if(xwing.getX()<MAX_X){
+				xwing.addToX(delta*H_DISPLACEMENT_FORWARD);
+				if(xwing.getX()>MAX_X){
+					xwing.setX(MAX_X);
+				}
+			}
+			else{
+				bgX -= delta * 0.2f;
+				dstar.addToX(-1*delta*H_DISPLACEMENT_FORWARD);
+				for(ImperialTIEFighter fighter: fighters){
+					fighter.addToX(-1*delta*H_DISPLACEMENT_FORWARD);
+				}
 			}
 		}
-		else{
-			bgX -= delta * 0.2f;
-			general.addToX(-1*delta*H_DISPLACEMENT_FORWARD);
-			for(ImperialTIEFighter fighter: fighters){
-				fighter.addToX(-1*delta*H_DISPLACEMENT_FORWARD);
+		
+		if(gc.getInput().isKeyDown(Input.KEY_RIGHT)){
+			xwing.setAnimation(WALK);
+			if(xwing.getX()<MAX_X){
+				xwing.addToX(delta*H_DISPLACEMENT_FORWARD);
+				if(xwing.getX()>MAX_X){
+					xwing.setX(MAX_X);
+				}
+			}
+			else{
+				bgX -= delta * 0.2f;
+				dstar.addToX(-1*delta*H_DISPLACEMENT_FORWARD);
+				for(ImperialTIEFighter fighter: fighters){
+					fighter.addToX(-1*delta*H_DISPLACEMENT_FORWARD);
+				}
+			}
+		}
+		else if(gc.getInput().isKeyDown(Input.KEY_LEFT)){
+			xwing.setAnimation(WALK);
+			if(xwing.getX()<=MAX_X){
+				xwing.addToX(-1*delta*H_DISPLACEMENT_FORWARD);
+				if(xwing.getX()<MIN_X){
+					xwing.setX(MIN_X);
+					xwing.setAnimation(STILL);
+				}
 			}
 		}
 		
@@ -197,7 +225,7 @@ public class ThirdLevelState extends BasicGameState{
 		}
 		checkIfAttacked();
 		
-		general.getAnimation().update(delta);
+		dstar.getAnimation().update(delta);
 		xwing.getAnimation().update(delta);
 		
 		for(ImperialTIEFighter fighter:fighters){
@@ -210,7 +238,7 @@ public class ThirdLevelState extends BasicGameState{
 				}
 			}
 		}
-		if(general.isDead()){
+		if(dstar.isDead()){
 			s.enterState(State.THIRD_LEVEL); // TODO change this according to which level is next
 		}
 		if(xwing.isDead()){
@@ -222,10 +250,10 @@ public class ThirdLevelState extends BasicGameState{
 		xwing = new XWingStarfighter();
 		xwing.setY(LUKE_MIN_Y);
 		
-		general = new GeneralGrievous();
-		general.setY(LUKE_MIN_Y - 8);
+		dstar = new DeathStar();
+		dstar.setY(LUKE_MIN_Y - 8);
 		ImperialTIEFighter laStormTrooper = fighters.get(fighters.size()-1);
-		general.setX(laStormTrooper.getX() + Window.WIDTH);		
+		dstar.setX(laStormTrooper.getX() + Window.WIDTH);
 	}
 	
 	private void loadImages() throws SlickException{
@@ -234,7 +262,7 @@ public class ThirdLevelState extends BasicGameState{
 	
 	private void loadEnemyUnits() throws SlickException{
 		float x = 0, y = 0; 
-		for(int i=0;i<TROOPER_COUNT;i++){
+		for(int i=0;i<FIGHTER_COUNT;i++){
 			x+=500+Math.random()*1000;
 			y+=100+Math.random();
 			if(y > MAX_Y || y < MIN_Y){
@@ -345,8 +373,8 @@ public class ThirdLevelState extends BasicGameState{
 			e.printStackTrace();
 		}	
 		
-		if(general.getX()-xwing.getX()<=MIN_DIST_FROM_DISTANCE_X){
-			general.decreaseHealth(xwing.getDamage());
+		if(dstar.getX()-xwing.getX()<=MIN_DIST_FROM_DISTANCE_X){
+			dstar.decreaseHealth(xwing.getDamage());
 		}
 	}
 

@@ -14,12 +14,12 @@ public class InstructState extends BasicGameState{
 	Image bg;
 	Image instruct_title;
 	Image back;
-	String text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod\n" +
-					"tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,\n" +
-					"quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo\n" +
-					"consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse\n" +
-					"cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat\n" +
-					"non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+	String text = "The gameplay is just simple.\n" + 
+					"\nUse the left and right arrow keys to move your player backward and forward.\n" +
+					"Use the up arrow key to jump. Press 'A' to attack.\n" +
+					"Press 'S' as indicated during conversations.\n" +
+					"\nKill all enemies per level to reach the boss.\n" +
+					"If the player dies, just use the mouse pointer to choose the desired option.\n";
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
