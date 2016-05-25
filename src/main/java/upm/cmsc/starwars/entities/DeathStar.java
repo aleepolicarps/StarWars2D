@@ -77,7 +77,7 @@ public class DeathStar {
 		int[] duration5 = {200};
 		dead = new Animation(imgSequence4,duration5,false);
 		
-		Image[] imgSequence5 = {images.get("still"),images.get("toattack"),images.get("still"),images.get("toattack"),images.get("stand"),images.get("toattack")};
+		Image[] imgSequence5 = {images.get("still"),images.get("toattack"),images.get("still"),images.get("toattack"),images.get("still"),images.get("toattack")};
 		int[] duration6 = {50,50,50,50,50,50};
 		toattack = new Animation(imgSequence5,duration6,false);
 	}
@@ -161,15 +161,15 @@ public class DeathStar {
 		return timeLastAttack;
 	}
 
-	public void attack(LukeSkywalker luke){
+	public void attack(XWingStarfighter luke){
 		timeLastAttack = System.currentTimeMillis();
 		if(currHealth<DeathStar.MAX_HEALTH * 0.25){
-			animation = attack2;
-			if(this.getX()-luke.getX()<=MIN_DIST_FROM_DISTANCE)
+			animation = attack;
+			if(this.getY()-luke.getY()<=0)
 				luke.decreaseHealth(DAMAGE*5);
 		}else{
 			animation = attack;
-			if(this.getX()-luke.getX()<=MIN_DIST_FROM_DISTANCE)
+			if(this.getY()-luke.getY()<=0)
 				luke.decreaseHealth(DAMAGE);
 		}
 		attacking = true;

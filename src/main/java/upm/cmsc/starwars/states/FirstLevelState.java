@@ -41,10 +41,10 @@ public class FirstLevelState extends BasicGameState{
 	private final float LASER_Y = 525;
 	private final float MAX_X = 400;
 	private final float MIN_X = 0;
-	private final int DROID_COUNT = 1;
+	private final int DROID_COUNT = 5;
 	private final long LASER_INTERVAL = 3000;
 	
-	private Image tree,tumbleweed,background,path,avatar_grievous,avatar_luke;
+	private Image tree,tumbleweed,background,path,avatar_grievous,avatar_luke,avatar_r2d2;
 	private boolean attacking,jumping,paused,preboss=false,inplace=false,postboss=false,endlevel=false;
 	private float hVelocity;
 	private long timeStarted;
@@ -63,6 +63,7 @@ public class FirstLevelState extends BasicGameState{
 		loadImages();
 		loadEnemyUnits();
 		initializeCharacters();
+		preboss=false; inplace=false; postboss=false; endlevel=false; talkCounter=0;
 	}
 
 	@Override
@@ -137,9 +138,15 @@ public class FirstLevelState extends BasicGameState{
 								g.drawString("Luke Skywalker", 150, 50);
 								g.setColor(Color.white);
 								g.drawString("General Grievous. I was wondering if after all these years", 150, 80);
-								g.drawString("you'd like to meet.", 150, 100);
+								g.drawString("you'd like to meet. Now, where is Princess Leia?", 150, 100);
 								break;
-						case 3: preboss = false;
+						case 3: g.drawImage(avatar_grievous, 640, 50);
+								g.setColor(Color.red);
+								g.drawString("General Grievous", 60, 50);
+								g.setColor(Color.white);
+								g.drawString("You'll never find her.", 60, 80);
+								break;
+						case 4: preboss = false;
 								postboss = true;
 								break;
 					}
@@ -169,7 +176,7 @@ public class FirstLevelState extends BasicGameState{
 						g.setColor(Color.blue);
 						g.drawString("Luke Skywalker", 150, 50);
 						g.setColor(Color.white);
-						g.drawString("General Grievous. Where is Darth Vader?", 150, 80);
+						g.drawString("General Grievous. Where is Princess Leia?", 150, 80);
 						break;
 				case 2: g.drawImage(avatar_grievous, 640, 50);
 						g.setColor(Color.red);
@@ -177,7 +184,19 @@ public class FirstLevelState extends BasicGameState{
 						g.setColor(Color.white);
 						g.drawString(".....", 60, 80);
 						break;
-				case 3: MenuState.setCurrentGameLevel(2);
+				case 3: g.drawImage(avatar_luke, 60, 50);
+						g.setColor(Color.blue);
+						g.drawString("Luke Skywalker", 150, 50);
+						g.setColor(Color.white);
+						g.drawString("R2. I'm going back to the XWing. We're going to Grievous' ship.", 150, 80);
+						break;
+				case 4: g.drawImage(avatar_r2d2, 640, 50);
+						g.setColor(Color.blue);
+						g.drawString("R2-D2", 60, 50);
+						g.setColor(Color.white);
+						g.drawString("Beep Beep Beep", 60, 80);
+						break;
+				case 5: MenuState.setCurrentGameLevel(2);
 						s.enterState(State.TRANS_STATE);
 						break;
 				}
@@ -335,6 +354,7 @@ public class FirstLevelState extends BasicGameState{
 		path = new Image(CustomFileUtil.getFilePath("/elements/desert_path.png"));
 		avatar_grievous = new Image(CustomFileUtil.getFilePath("/avatars/avatar_grievous.png"));
 		avatar_luke = new Image(CustomFileUtil.getFilePath("/avatars/avatar_luke.png"));
+		avatar_r2d2 = new Image(CustomFileUtil.getFilePath("/avatars/avatar_r2d2.png"));
 	}
 	
 	private void loadEnemyUnits() throws SlickException{

@@ -22,7 +22,7 @@ import upm.cmsc.starwars.CustomFileUtil;
 public class XWingStarfighter {
 	public static final long ATTACK_DURATION = 300;
 	public static final long JUMP_DURATION = 250;
-	public static final int MAX_HEALTH = 300;
+	public static final int MAX_HEALTH = 150;
 	public static final float H_DISPLACEMENT_FORWARD = 0.1f;
 	public static final float H_DISPLACEMENT_UPWARD = 0.3f;
 	public static final float H_DISPLACEMENT_DOWNWARD = 0.3f;

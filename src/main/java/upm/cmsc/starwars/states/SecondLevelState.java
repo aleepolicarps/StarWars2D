@@ -44,7 +44,7 @@ public class SecondLevelState extends BasicGameState{
 	private final float LASER_Y = 355;
 	private final float MAX_X = 400;
 	private final float MIN_X = 0;
-	private final int TROOPER_COUNT = 1;
+	private final int TROOPER_COUNT = 5;
 	private final long LASER_INTERVAL = 3000;
 	
 	private Image background,avatar_droideka,avatar_luke,avatar_r2d2;
@@ -74,10 +74,12 @@ public class SecondLevelState extends BasicGameState{
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
-		
 		loadImages();
 		loadEnemyUnits();
 		initializeCharacters();
+		preboss=false;inplace=false;postboss=false;endlevel=false;assemble=false;
+		timeDeadDroideka=0;deadDroideka=false;pickgun=false;alreadyPickedGun=false;lastTrooperX=0;
+		pickCounter=0; bgX=0;talkCounter=0;randChoice=0; randSet=false;
 	}
 
 	@Override
@@ -165,8 +167,7 @@ public class SecondLevelState extends BasicGameState{
 								g.setColor(Color.blue);
 								g.drawString("Luke Skywalker", 150, 50);
 								g.setColor(Color.white);
-								g.drawString("A Droideka. It may have information regarding Darth ", 150, 80);
-								g.drawString("Vader's location. I must locate him.", 150, 100);
+								g.drawString("A Droideka. It may have information regarding Leia's location.", 150, 80);
 								break;
 						case 3: preboss = false;
 								postboss = true;
@@ -191,13 +192,13 @@ public class SecondLevelState extends BasicGameState{
 						g.setColor(Color.red);
 						g.drawString("Droideka", 60, 50);
 						g.setColor(Color.white);
-						g.drawString("YOU... WILL... NOT...", 60, 80);
+						g.drawString("YOU... WILL... NOT... FIND HER...", 60, 80);
 						break;
 				case 1: g.drawImage(avatar_luke, 60, 50);
 						g.setColor(Color.blue);
 						g.drawString("Luke Skywalker", 150, 50);
 						g.setColor(Color.white);
-						g.drawString("Will what? Answer me!", 150, 80);
+						g.drawString("WHERE IS SHE?! Answer me!", 150, 80);
 						break;
 				case 2: g.drawImage(avatar_droideka, 640, 50);
 						g.setColor(Color.red);
