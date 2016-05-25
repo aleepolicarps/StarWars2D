@@ -163,13 +163,15 @@ public class DeathStar {
 
 	public void attack(XWingStarfighter luke){
 		timeLastAttack = System.currentTimeMillis();
+		float up = this.getY()+49;
+		float down = this.getY()-49+this.getAnimation().getHeight();
 		if(currHealth<DeathStar.MAX_HEALTH * 0.25){
 			animation = attack;
-			if(this.getY()-luke.getY()<=0)
+			if(up-luke.getY()<=0&&down-luke.getY()>=0)
 				luke.decreaseHealth(DAMAGE*5);
 		}else{
 			animation = attack;
-			if(this.getY()-luke.getY()<=0)
+			if(up-luke.getY()<=0&&down-luke.getY()>=0)
 				luke.decreaseHealth(DAMAGE);
 		}
 		attacking = true;
